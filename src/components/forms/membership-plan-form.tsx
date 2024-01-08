@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { createMembershipPlan } from "@/actions/membership-plans";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,11 +18,18 @@ import { Input } from "@/components/ui/input";
 import { MembershipPlanSchema } from "@/schemas";
 import { motion } from "framer-motion";
 import { useTransition } from "react";
+import toast from "react-hot-toast";
 import { CardWrapper } from "../card-wrapper";
-import { createMembershipPlan } from "@/actions/membership-plans";
-import { toast } from "sonner";
+import { Benefit } from "@prisma/client";
+import { Checkbox } from "../ui/checkbox";
 
-export const MembershipPlanForm = () => {
+interface MembershipPlanFormProps {
+  membershipBenefits: Benefit[];
+}
+
+export const MembershipPlanForm = ({
+  membershipBenefits,
+}: MembershipPlanFormProps) => {
   const [isPending, startTranistion] = useTransition();
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MembershipPlanSchema>>({
@@ -30,19 +38,37 @@ export const MembershipPlanForm = () => {
       name: "",
       durationInMonth: undefined,
       price: undefined,
-      facilities: [],
+      benefitIds: [],
     },
   });
 
+  const benefitIds = form.getValues("benefitIds");
+
+  console.log(benefitIds.length);
+
+  const handleCheck = (id: string) => {
+    const isChecked = benefitIds.includes(id);
+    if (isChecked) {
+      const updatedIds = benefitIds.filter((item) => item !== id);
+      form.setValue("benefitIds", updatedIds, { shouldValidate: true });
+    } else {
+      form.setValue("benefitIds", [...benefitIds, id], {
+        shouldValidate: true,
+      });
+    }
+  };
+
   function onSubmit(values: z.infer<typeof MembershipPlanSchema>) {
     startTranistion(() => {
-      createMembershipPlan(values).then(({ success, error }) => {
-        if (success) {
-          toast.success(success);
-        } else if (error) {
-          toast.error(error);
+      createMembershipPlan({ ...values, name: values.name.toUpperCase() }).then(
+        ({ success, error }) => {
+          if (success) {
+            toast.success(success);
+          } else if (error) {
+            toast.error(error);
+          }
         }
-      });
+      );
     });
   }
   return (
@@ -61,7 +87,7 @@ export const MembershipPlanForm = () => {
                 <FormControl>
                   <Input
                     placeholder="e.g. Basic Plan, Standard Plan etc"
-                    disabled={isPending}
+                    isPending={isPending}
                     {...field}
                   />
                 </FormControl>
@@ -77,6 +103,7 @@ export const MembershipPlanForm = () => {
                 <FormLabel>Duration in Month</FormLabel>
                 <FormControl>
                   <Input
+                    isPending={isPending}
                     placeholder="Enter Membership Duration"
                     {...field}
                     type="number"
@@ -94,6 +121,7 @@ export const MembershipPlanForm = () => {
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
+                    isPending={isPending}
                     placeholder="Enter Membership Price"
                     {...field}
                     type="number"
@@ -105,22 +133,41 @@ export const MembershipPlanForm = () => {
           />
           <FormField
             control={form.control}
-            name="facilities"
-            render={({ field }) => (
+            name="benefitIds"
+            render={() => (
               <FormItem>
                 <FormLabel>Facilities</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="john@example.com"
-                    disabled={isPending}
-                    {...field}
-                  />
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {membershipBenefits.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center py-2 space-x-2"
+                      >
+                        <Checkbox
+                          id={item.id}
+                          onClick={() => handleCheck(item.id)}
+                        />
+                        <label
+                          htmlFor={item.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {item.title}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
-          <FramerButton className="ml-auto">Submit</FramerButton>
+          <FramerButton
+            whileTap={{ scale: 1.05 }}
+            disabled={isPending}
+            className="ml-auto"
+          >
+            Submit
+          </FramerButton>
         </form>
       </Form>
     </CardWrapper>

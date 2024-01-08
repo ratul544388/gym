@@ -19,8 +19,16 @@ import { motion } from "framer-motion";
 import { useTransition } from "react";
 import { CardWrapper } from "../card-wrapper";
 import { DatePicker } from "../date-picker";
+import { MembershipPlanPicker } from "../membership-plan-picker";
+import { MembershipPlan } from "@prisma/client";
 
-export const MemberForm = () => {
+export const MemberForm = ({
+  membershipPlans,
+  selectedPlan,
+}: {
+  membershipPlans: MembershipPlan[];
+  selectedPlan: MembershipPlan;
+}) => {
   const [isPending, startTranistion] = useTransition();
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MemberSchema>>({
@@ -39,7 +47,11 @@ export const MemberForm = () => {
     console.log(values);
   }
   return (
-    <CardWrapper title="Enroll a new Member">
+    <CardWrapper>
+      <MembershipPlanPicker
+        membershipPlans={membershipPlans}
+        selectedPlan={selectedPlan}
+      />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -133,11 +145,7 @@ export const MemberForm = () => {
               <FormItem>
                 <FormLabel>Photo</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter your age"
-                    {...field}
-                    type="file"
-                  />
+                  <Input placeholder="Enter your age" {...field} type="file" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

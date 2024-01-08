@@ -1,12 +1,14 @@
 "use client";
 
-import { MembershipPlanForm } from "@/components/forms/membership-plan-form";
 import { PageHeader } from "@/components/page-header";
+import { Benefit } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 
-interface MembershipPlansClientProps {}
+interface MembershipPlansClientProps {
+}
 
-export const MembershipPlansClient = ({}: MembershipPlansClientProps) => {
+export const MembershipPlansClient = ({
+}: MembershipPlansClientProps) => {
   return (
     <div className="space-y-3">
       <PageHeader
@@ -15,7 +17,6 @@ export const MembershipPlansClient = ({}: MembershipPlansClientProps) => {
         actionUrl="/membership-plans/new"
         actionIcon={PlusCircle}
       />
-      <MembershipPlanForm />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { Header } from "@/components/header/header";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { cn } from "@/lib/utils";
 import { ToastProvider } from "@/providers/toast-provider";
+import ModalProvider from "@/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <ToastProvider />
+            <ModalProvider />
             <Header />
             <main className="flex-1 flex-grow min-h-screen">{children}</main>
             Footer

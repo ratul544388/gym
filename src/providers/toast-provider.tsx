@@ -1,4 +1,4 @@
-import {Toaster} from 'sonner';
+import {Toaster} from 'react-hot-toast';
 
 export const ToastProvider = () => {
     return (

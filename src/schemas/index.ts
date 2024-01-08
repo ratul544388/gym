@@ -29,7 +29,6 @@ export const MembershipPlanSchema = z.object({
     .string()
     .min(1, { message: "Name is required" })
     .max(50, { message: "Name cannot be more than 50 characters in length" }),
-  facilities: z.array(z.string()),
   durationInMonth: z.coerce.number(),
   price: z.coerce
     .number({
@@ -42,4 +41,12 @@ export const MembershipPlanSchema = z.object({
     .max(20000, {
       message: "Ensure the price is within the range of 500 to 20,000 DBT.",
     }),
+  benefitIds: z.array(z.string()),
+});
+
+export const MembershipBenefitSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(100, { message: "Name cannot be more than 100 characters in length" }),
 });

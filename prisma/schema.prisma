@@ -23,14 +23,24 @@ model User {
 }
 
 model MembershipPlan {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   durationInMonth Int
   price           Int
-  facilities      String[]
 
   members Member[]
   renews  Renew[]
+
+  benefitIds String[]  @db.ObjectId
+  benefits   Benefit[] @relation(fields: [benefitIds], references: [id])
+}
+
+model Benefit {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+
+  membershipPlanIds String[]         @db.ObjectId
+  membershipPlans   MembershipPlan[] @relation(fields: [membershipPlanIds], references: [id])
 }
 
 model Member {

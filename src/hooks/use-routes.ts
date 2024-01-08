@@ -14,7 +14,7 @@ export const useRoutes = () => {
       label: "Members",
       icon: Users2,
       href: "/members",
-      active: ["/members"].includes(pathname),
+      active: ["/members", "/members/new", "/members/edit"].includes(pathname),
     },
     {
       label: "Membership Plans",
