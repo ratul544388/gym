@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model User {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  name   String
+  email  String
+  image  String
+  role   Role   @default(USER)
+}
+
+model MembershipPlan {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  durationInMonth Int
+  price           Int
+  facilities      String[]
+
+  members Member[]
+  renews  Renew[]
+}
+
+model Member {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String?
+  age       Int
+  phone     String
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  membershipPlan   MembershipPlan @relation(fields: [membershipPlanId], references: [id])
+  membershipPlanId String         @db.ObjectId
+
+  renews Renew[]
+}
+
+model Renew {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  member   Member @relation(fields: [memberId], references: [id])
+  memberId String @db.ObjectId
+
+  membershipPlan   MembershipPlan @relation(fields: [membershipPlanId], references: [id])
+  membershipPlanId String         @db.ObjectId
+}
