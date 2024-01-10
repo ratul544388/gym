@@ -4,7 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { createMembershipBenefit } from "@/actions/membership-benefits";
+import {
+  createMembershipBenefit,
+  editMembershipBenefit,
+} from "@/actions/membership-benefits-action";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,44 +18,59 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MembershipBenefitSchema } from "@/schemas";
-import { MembershipPlan } from "@prisma/client";
+import { Benefit } from "@prisma/client";
 import { motion } from "framer-motion";
-import { useState, useTransition } from "react";
-import { CardWrapper } from "../card-wrapper";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import toast from "react-hot-toast";
+import { CardWrapper } from "../card-wrapper";
 
 export const MembershipBenefitForm = ({
-  membershipPlans,
+  benefit,
+  onChange,
 }: {
-  membershipPlans?: MembershipPlan[];
+  benefit?: Benefit;
+  onChange: () => void;
 }) => {
   const [isPending, startTranistion] = useTransition();
   const router = useRouter();
-  const [isAdding, setIsAdding] = useState(false);
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MembershipBenefitSchema>>({
     resolver: zodResolver(MembershipBenefitSchema),
     defaultValues: {
-      title: "",
+      title: benefit?.title || "",
     },
   });
 
   function onSubmit(values: z.infer<typeof MembershipBenefitSchema>) {
     startTranistion(() => {
-      createMembershipBenefit(values).then(({ success, error }) => {
-        if (success) {
-          toast.success(success);
-          form.reset();
-          setIsAdding(false);
-          router.refresh();
-        } else if (error) {
-          toast.error(error);
-        }
-      });
+      if (benefit) {
+        editMembershipBenefit(values, benefit.id).then(({ success, error }) => {
+          if (success) {
+            toast.success("success");
+            form.reset();
+            onChange();
+            router.refresh();
+          } else if (error) {
+            toast.error(error);
+          }
+        });
+      } else {
+        createMembershipBenefit(values).then(({ success, error }) => {
+          if (success) {
+            toast.success(success);
+            form.reset();
+            onChange();
+            router.refresh();
+          } else if (error) {
+            toast.error(error);
+          }
+        });
+      }
     });
   }
-  return isAdding ? (
+
+  return (
     <CardWrapper className="w-full ml-auto">
       <Form {...form}>
         <form
@@ -68,6 +86,7 @@ export const MembershipBenefitForm = ({
                   <Input
                     placeholder="Write a Membership Benefit"
                     isPending={isPending}
+                    autoFocus
                     {...field}
                   />
                 </FormControl>
@@ -79,21 +98,17 @@ export const MembershipBenefitForm = ({
             <Button
               disabled={isPending}
               variant="ghost"
-              onClick={() => setIsAdding(false)}
+              onClick={() => onChange()}
               type="button"
             >
               Cancel
             </Button>
             <FramerButton disabled={isPending} whileTap={{ scale: 1.05 }}>
-              Create
+              {benefit ? "Update" : "Create"}
             </FramerButton>
           </div>
         </form>
       </Form>
     </CardWrapper>
-  ) : (
-    <Button onClick={() => setIsAdding(true)} className="ml-auto">
-      Add new
-    </Button>
   );
 };

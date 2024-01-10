@@ -39,3 +39,12 @@ export async function createMembershipPlan(
 
   return { success: "Membership Plan Created!" };
 }
+
+export async function getMembershipPlans() {
+  const plans = await db.membershipPlan.findMany({
+    include: {
+      benefits: true,
+    },
+  });
+  return plans;
+}

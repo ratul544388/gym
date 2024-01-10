@@ -1,3 +1,4 @@
+import { Gender } from "@prisma/client";
 import * as z from "zod";
 
 export const MemberSchema = z.object({
@@ -5,11 +6,15 @@ export const MemberSchema = z.object({
     .string()
     .min(1, { message: "Name is required" })
     .max(50, { message: "Name cannot be more than 50 characters in length" }),
-  email: z.string().max(60, { message: "Email length is very high" }),
   phone: z
     .string()
     .min(11, { message: "Phone number must contain 11 digits" })
     .max(11, { message: "Phone number must contain 11 digits" }),
+  email: z.string().max(60, { message: "Email length is very high" }),
+  address: z
+    .string()
+    .min(5, { message: "Address is too short" })
+    .max(70, { message: "Address is too long" }),
   age: z.coerce
     .number({
       required_error: "phone is required",
@@ -17,8 +22,12 @@ export const MemberSchema = z.object({
     })
     .min(8, { message: "Minimum age must be 8 years" })
     .max(100, { message: "Maximum age must be 100 years" }),
+  gender: z.nativeEnum(Gender, {
+    required_error: "Gender is required",
+    invalid_type_error: "Gender is required",
+  }),
   image: z.string(),
-  joiningDate: z.date({
+  startDate: z.date({
     invalid_type_error: "Joining date is missing",
     required_error: "Joining date is missing",
   }),
@@ -49,4 +58,11 @@ export const MembershipBenefitSchema = z.object({
     .string()
     .min(1, { message: "Name is required" })
     .max(100, { message: "Name cannot be more than 100 characters in length" }),
+});
+
+export const AdmissionFeeSchema = z.object({
+  admissionFee: z.coerce
+    .number()
+    .min(300, { message: "Admission Fee can not be less than 300 BDT." })
+    .max(3000, { message: "Admission Fee can not be higher than 3000 BDT." }),
 });

@@ -32,7 +32,7 @@ export function DatePicker({ value, onChange, disabled }: DatePickerProps) {
                 !value && "text-muted-foreground"
               )}
             >
-              {value ? format(value, "PPP") : <span>Pick a date</span>}
+              {value ? format(value, "PPP") : <span>Pick Joinng Date</span>}
               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
             </Button>
           </FormControl>

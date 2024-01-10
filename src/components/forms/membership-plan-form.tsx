@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { createMembershipPlan } from "@/actions/membership-plans";
+import { createMembershipPlan } from "@/actions/membership-plans-action";
 import { Button } from "@/components/ui/button";
 import {
   Form,

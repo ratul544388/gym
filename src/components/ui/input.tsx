@@ -5,10 +5,21 @@ import { cn } from "@/lib/utils";
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   isPending?: boolean;
+  autoFocus?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, isPending, type, ...props }, ref) => {
+  ({ className, isPending, autoFocus, type, ...props }, ref) => {
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+      if (autoFocus) {
+        setTimeout(() => {
+          inputRef?.current?.focus();
+        }, 300);
+      }
+    }, [autoFocus]);
+
     return (
       <input
         type={type}
@@ -17,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           isPending && "pointer-events-none opacity-60",
           className
         )}
-        ref={ref}
+        ref={inputRef}
         {...props}
       />
     );

@@ -46,9 +46,12 @@ model Benefit {
 model Member {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  email     String?
-  age       Int
   phone     String
+  gender    Gender
+  email     String?  @unique
+  address   String
+  age       Int
+  image     String?
   startDate DateTime
   endDate   DateTime
 
@@ -67,6 +70,18 @@ model Renew {
   member   Member @relation(fields: [memberId], references: [id])
   memberId String @db.ObjectId
 
+  createdAt DateTime @default(now())
+
   membershipPlan   MembershipPlan @relation(fields: [membershipPlanId], references: [id])
   membershipPlanId String         @db.ObjectId
+}
+
+model DefaultSettings {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  admissionFee Int
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }

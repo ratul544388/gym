@@ -1,9 +1,20 @@
-import { MembershipPlan } from "@prisma/client";
+import { MemberWithPlan, PlanWithBenefits } from "@/types";
+import { Benefit, MembershipPlan } from "@prisma/client";
 import { create } from "zustand";
 
-export type ModalType = "MEMBERSHIP_PLAN_PICKER_MODAL";
+export type ModalType =
+  | "MEMBERSHIP_PLAN_PICKER_MODAL"
+  | "DELETE_MEMBER_MODAL"
+  | "EDIT_MEMBER_MODAL"
+  | "DELETE_BENEFIT_MODAL"
+  | "ADMISSION_FEE_MODAL"
 interface ModalData {
-  membershipPlans?: MembershipPlan[];
+  membershipPlans?: PlanWithBenefits[];
+  selectedPlan?: MembershipPlan;
+  memberId?: string;
+  benefit?: Benefit;
+  member?: MemberWithPlan;
+  admissionFee?: number;
 }
 
 interface ModalStore {

@@ -1,11 +1,16 @@
+import { MembershipPlanForm } from "@/components/forms/membership-plan-form";
+import { PageHeader } from "@/components/page-header";
 import db from "@/lib/db";
-import React from "react";
-import { NewMembershipPlanClient } from "./new-membership-plan-client";
 
 const Page = async () => {
   const membershipBenefits = await db.benefit.findMany();
 
-  return <NewMembershipPlanClient membershipBenefits={membershipBenefits} />;
+  return (
+    <div className="space-y-3">
+      <PageHeader label="New" />
+      <MembershipPlanForm membershipBenefits={membershipBenefits} />
+    </div>
+  );
 };
 
 export default Page;

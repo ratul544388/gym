@@ -1,12 +1,13 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
+import { PlanWithBenefits } from "@/types";
 import { MembershipPlan } from "@prisma/client";
 import { motion, useAnimation } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
 interface MembershipPlanPickerProps {
-  membershipPlans: MembershipPlan[];
+  membershipPlans: PlanWithBenefits[];
   selectedPlan: MembershipPlan;
 }
 

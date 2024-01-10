@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, useAnimation } from "framer-motion";
-import { ArrowLeft, LucideIcon } from "lucide-react";
+import { ArrowLeft, LucideIcon, Plus, PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { useRouter } from "next/navigation";
 
 interface PageHeaderProps {
   label: string;
@@ -26,7 +26,7 @@ export const PageHeader = ({
   const animation = useAnimation();
   const MotionLink = motion(Link);
   const MotionButton = motion(Button);
-  const MotionIcon = motion(ActionIcon as LucideIcon);
+  const PlusIcon = motion(PlusCircle);
   const MotionArrowLeft = motion(ArrowLeft);
 
   return (
@@ -62,7 +62,7 @@ export const PageHeader = ({
             className={buttonVariants()}
           >
             Add new
-            <MotionIcon
+            <PlusIcon
               animate={animation}
               variants={{ scaleUp: { scale: 1.4 }, scaleDown: { scale: 1 } }}
               className="ml-2 h-4 w-4"
