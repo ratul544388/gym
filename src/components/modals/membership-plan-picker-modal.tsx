@@ -4,9 +4,10 @@ import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import qs from "query-string";
 
 const boxVariants = {
   hidden: {
@@ -28,6 +29,7 @@ const listVariants = {
 };
 
 export const MembershipPlanPickerModal = () => {
+  const pathname = usePathname();
   const { isOpen, type, onClose, data } = useModal();
   const { membershipPlans } = data;
   const MotionButton = motion(Button);
@@ -51,7 +53,7 @@ export const MembershipPlanPickerModal = () => {
   }
 
   const handleSelect = (planId: string) => {
-    router.push(`/members/new?selected_plan=${planId}`);
+    router.push(`${pathname}?selected_plan=${planId}`);
     onClose();
   };
 

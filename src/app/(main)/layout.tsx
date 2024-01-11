@@ -6,7 +6,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   return (
     <MaxWidthWrapper className="min-h-screen md:pl-0">
       <Sidebar />
-      <div className="md:pl-[272px]">{children}</div>
+      <div className="md:pl-[276px]">{children}</div>
     </MaxWidthWrapper>
   );
 }

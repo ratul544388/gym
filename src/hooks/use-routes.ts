@@ -1,4 +1,4 @@
-import { Home, LayoutDashboard, Settings, Users2 } from "lucide-react";
+import { Home, LayoutDashboard, Settings, ShieldCheck, Users2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export const useRoutes = () => {
@@ -18,7 +18,7 @@ export const useRoutes = () => {
     },
     {
       label: "Membership Plans",
-      icon: Users2,
+      icon: ShieldCheck,
       href: "/membership-plans",
       active: ["/membership-plans"].includes(pathname),
     },

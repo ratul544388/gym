@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "./ui/button";
 import { Separator } from "./ui/separator";
+import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
   label: string;
@@ -13,6 +14,7 @@ interface PageHeaderProps {
   actionIcon?: LucideIcon;
   actionUrl?: string;
   backButtonUrl?: string;
+  hideBackButton?: boolean;
 }
 
 export const PageHeader = ({
@@ -21,6 +23,7 @@ export const PageHeader = ({
   actionUrl,
   actionIcon: ActionIcon,
   backButtonUrl,
+  hideBackButton,
 }: PageHeaderProps) => {
   const router = useRouter();
   const animation = useAnimation();
@@ -41,6 +44,7 @@ export const PageHeader = ({
             onClick={() =>
               backButtonUrl ? router.push(backButtonUrl) : router.back()
             }
+            className={cn(hideBackButton && "hidden")}
           >
             <MotionArrowLeft
               animate={animation}
@@ -48,7 +52,7 @@ export const PageHeader = ({
                 scaleBackButton: { scale: 1.25 },
                 resetBackButton: { scale: 1 },
               }}
-              className="h-5 w-5"
+              className={cn("h-5 w-5")}
             />
           </MotionButton>
           <h3 className="text-2xl font-bold">{label}</h3>

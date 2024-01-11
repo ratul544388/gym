@@ -9,15 +9,19 @@ export async function renewMember({
   membershipPlanId,
   memberId,
   endDate,
+  cost,
 }: {
   membershipPlanId: string;
   memberId: string;
   endDate: Date;
+  cost: number;
 }) {
   const user = await currentUser();
 
-  if (!membershipPlanId || !memberId || !endDate) {
-    return { error: "Membership plan ID or member ID or End Date is missing" };
+  if (!membershipPlanId || !memberId || !endDate || !cost) {
+    return {
+      error: "Membership plan ID or member ID or End Date or Cost is missing",
+    };
   }
 
   if (!user) {
@@ -40,6 +44,7 @@ export async function renewMember({
       renews: {
         create: {
           membershipPlanId,
+          cost,
         },
       },
     },

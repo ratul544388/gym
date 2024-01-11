@@ -39,16 +39,17 @@ export const RenewMemberForm = ({
     };
 
     const startDate = isInvalidMember() ? new Date() : member.endDate;
-
     const endDate = getEndingDate({
       startDate,
       durationInMonth: selectedPlan.durationInMonth,
     });
+    const cost = selectedPlan.price;
     startTranistion(() => {
       renewMember({
         memberId: member.id,
         membershipPlanId: member.membershipPlanId,
         endDate,
+        cost,
       }).then(({ error, success }) => {
         if (success) {
           toast.success(success);
@@ -78,10 +79,12 @@ export const RenewMemberForm = ({
     },
     {
       label: "Last Renewed",
-      value: format(
-        member.renews[member.renews.length - 1].createdAt,
-        "d MMMM yyyy"
-      ),
+      value: !!member.renews.length
+        ? format(
+            member.renews[member.renews.length - 1].createdAt,
+            "d MMMM yyyy"
+          )
+        : "Null",
     },
     {
       label: "Current Membership Plan",
@@ -95,7 +98,7 @@ export const RenewMemberForm = ({
         selectedPlan={selectedPlan}
       />
       <div className="flex flex-col gap-8">
-        <section className="flex items-center gap-6 ">
+        <section className="flex xs:flex-row flex-col xs:items-center gap-6 ">
           <div className="w-[200px] h-[220px] relative border">
             <Image
               src={member.image || "/images/placeholder.jpg"}
@@ -115,7 +118,7 @@ export const RenewMemberForm = ({
             ))}
           </div>
         </section>
-        <section className="flex items-center justify-between">
+        <section className="flex flex-col xs:flex-row gap-6 xs:items-center justify-between">
           <div className="flex flex-col gap-1">
             <p className="text-muted-foreground font-semibold">
               Renew Membership Plan:{" "}
@@ -130,7 +133,7 @@ export const RenewMemberForm = ({
             onClick={onSubmit}
             disabled={isPending}
             whileTap={{ scale: 1.05 }}
-            className="ml-auto"
+            className="ml-auto w-full xs:w-fit"
             type="button"
           >
             Renew

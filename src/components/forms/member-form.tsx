@@ -72,6 +72,7 @@ export const MemberForm = ({
       startDate: form.getValues("startDate"),
       durationInMonth: selectedPlan.durationInMonth,
     });
+    const cost = selectedPlan.price;
     startTranistion(() => {
       if (member) {
         updateMember({ values, endDate, memberId: member.id }).then(
@@ -92,6 +93,7 @@ export const MemberForm = ({
           values,
           endDate,
           membershipPlanId: selectedPlan.id,
+          cost,
         }).then(({ error, success }) => {
           if (success) {
             toast.success(success);

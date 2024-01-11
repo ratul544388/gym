@@ -3,18 +3,79 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { getEndingDate } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
+import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
 import * as z from "zod";
 
-export const getMembers = async () => {
+export const getMembers = async ({
+  type,
+}: {
+  type?: "TODAY_JOINED" | "THIS_MONTH_JOINED" | "TODAY_RENEWED";
+} = {}) => {
+  const today = new Date();
   const members = await db.member.findMany({
+    where: {
+      ...(type === "TODAY_JOINED"
+        ? {
+            OR: [
+              {
+                startDate: {
+                  gte: startOfDay(today),
+                  lte: endOfDay(today),
+                },
+              },
+              {
+                renews: {
+                  some: {
+                    createdAt: {
+                      gte: startOfDay(today),
+                      lte: endOfDay(today),
+                    },
+                  },
+                },
+              },
+            ],
+          }
+        : type === "THIS_MONTH_JOINED"
+        ? {
+            OR: [
+              {
+                startDate: {
+                  gte: startOfMonth(today),
+                  lte: endOfMonth(today),
+                },
+              },
+              {
+                renews: {
+                  some: {
+                    createdAt: {
+                      gte: startOfMonth(today),
+                      lte: endOfMonth(today),
+                    },
+                  },
+                },
+              },
+            ],
+          }
+        : type === "TODAY_RENEWED"
+        ? {
+            renews: {
+              some: {
+                createdAt: {
+                  gte: startOfDay(today),
+                  lte: endOfDay(today),
+                },
+              },
+            },
+          }
+        : {}),
+    },
     orderBy: {
       createdAt: "desc",
     },
     include: {
       membershipPlan: true,
-      // renews: true,
+      renews: true,
     },
   });
 
@@ -24,10 +85,12 @@ export const getMembers = async () => {
 export async function createMember({
   values,
   endDate,
+  cost,
   membershipPlanId,
 }: {
   values: z.infer<typeof MemberSchema>;
   endDate: Date;
+  cost: number;
   membershipPlanId: string;
 }) {
   const validatedFields = MemberSchema.safeParse(values);
@@ -51,6 +114,7 @@ export async function createMember({
   await db.member.create({
     data: {
       ...validatedFields.data,
+      cost,
       endDate,
       membershipPlanId,
     },

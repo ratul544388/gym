@@ -11,18 +11,19 @@ interface LogoProps {
 
 export const Logo = ({ className }: LogoProps) => {
   return (
-    <Link href="/" className={cn('', className)}>
+    <Link
+      href="/"
+      className={cn("relative w-[150px] h-[40px] overflow-hidden", className)}
+    >
       <Image
         src="/images/logo-light.png"
-        width={180}
-        height={30}
+        fill
         alt="Logo"
         className="dark:hidden"
       />
       <Image
         src="/images/logo-dark.png"
-        width={180}
-        height={30}
+        fill
         alt="Logo"
         className="hidden dark:block"
       />

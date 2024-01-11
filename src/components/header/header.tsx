@@ -15,10 +15,7 @@ export const Header = () => {
             <MobileSidebar />
             <Logo />
           </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggler />
-            <UserButton afterSignOutUrl="/" />
-          </div>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </MaxWidthWrapper>
     </header>
