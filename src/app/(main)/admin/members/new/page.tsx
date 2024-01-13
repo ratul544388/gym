@@ -18,10 +18,7 @@ const NewMember = async ({
   const defaultSettings = await db.defaultSettings.findFirst();
 
   if (!selectedPlan || !defaultSettings?.admissionFee) {
-    redirect("/membership-plans/new");
-  }
-
-  if (!defaultSettings?.admissionFee) {
+    redirect("/admin/membership-plans/new");
   }
 
   return (

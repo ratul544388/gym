@@ -1,0 +1,1 @@
+export const InstituteName = "Akash Fitness Studio"

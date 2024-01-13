@@ -5,6 +5,7 @@ import { DeleteMemberModal } from "@/components/modals/delete-member-modal";
 import { AdmissionFeeModal } from "@/components/modals/admission-fee-modal";
 import { MembershipPlanPickerModal } from "@/components/modals/membership-plan-picker-modal";
 import { useEffect, useState } from "react";
+import { DeleteMembershipPlanModal } from "@/components/modals/delete-membership-plan-modal";
 
 const ModalProvider = () => {
   const [mounted, setMounted] = useState(false);
@@ -23,6 +24,7 @@ const ModalProvider = () => {
       <DeleteMemberModal />
       <DeleteBenefitModal />
       <AdmissionFeeModal />
+      <DeleteMembershipPlanModal />
     </>
   );
 };

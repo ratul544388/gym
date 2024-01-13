@@ -3,6 +3,7 @@ import { getGraphRevenue, getRevenue } from "@/actions/revenue";
 import { Avatar } from "@/components/avatar";
 import { Overview } from "@/components/overview";
 import { PageHeader } from "@/components/page-header";
+import db from "@/lib/db";
 import { CircleDollarSign, Users2 } from "lucide-react";
 
 const DashboardPage = async () => {
@@ -13,6 +14,7 @@ const DashboardPage = async () => {
   const todayJoined = await getMembers({ type: "TODAY_JOINED" }).then(
     (res) => res.length
   );
+  const totalMembers = await db.member.count();
   const todayRenewed = await getMembers({ type: "TODAY_RENEWED" }).then(
     (res) => res.length
   );
@@ -37,7 +39,7 @@ const DashboardPage = async () => {
     },
     {
       label: "Members",
-      count: "+2000",
+      count: `${totalMembers}+`,
       growth: "2% ↓ from last month",
       icon: Users2,
     },
@@ -66,9 +68,9 @@ const DashboardPage = async () => {
           >
             <h4 className="font-semibold">{item.label}</h4>
             <h3 className="font-bold text-2xl text-primary">{item.count}</h3>
-            <p className="text-sm text-muted-foreground leading-3">
+            {/* <p className="text-sm text-muted-foreground leading-3">
               {item.growth}
-            </p>
+            </p> */}
             <item.icon className="h-5 w-5 text-muted-foreground absolute right-4 top-2" />
           </div>
         ))}

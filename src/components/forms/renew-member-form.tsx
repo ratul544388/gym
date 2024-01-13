@@ -2,7 +2,7 @@
 
 import { renewMember } from "@/actions/renew-member-action";
 import { Button } from "@/components/ui/button";
-import { getEndingDate } from "@/lib/utils";
+import { formatText, getEndingDate } from "@/lib/utils";
 import {
   MemberWithPlan,
   MemberWithPlanAndRenew,
@@ -53,7 +53,7 @@ export const RenewMemberForm = ({
       }).then(({ error, success }) => {
         if (success) {
           toast.success(success);
-          router.push("/members");
+          router.push("/admin/members");
           router.refresh();
         } else if (error) {
           toast.error(error);
@@ -67,7 +67,7 @@ export const RenewMemberForm = ({
   const memberDetails = [
     {
       label: "Name",
-      value: member.name,
+      value: formatText(member.name),
     },
     {
       label: "Phone",
@@ -88,7 +88,7 @@ export const RenewMemberForm = ({
     },
     {
       label: "Current Membership Plan",
-      value: member.membershipPlan.name,
+      value: formatText(member.membershipPlan.name),
     },
   ];
   return (
@@ -122,7 +122,9 @@ export const RenewMemberForm = ({
           <div className="flex flex-col gap-1">
             <p className="text-muted-foreground font-semibold">
               Renew Membership Plan:{" "}
-              <span className="text-primary">{selectedPlan.name}</span>
+              <span className="text-primary">
+                {formatText(selectedPlan.name)}
+              </span>
             </p>
             <Separator className="h-[1.5px]" />
             <p className="text-muted-foreground font-semibold">

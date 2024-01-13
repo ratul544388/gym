@@ -2,8 +2,21 @@
 
 import { currentUser } from "@/lib/current-user";
 import db from "@/lib/db";
+import { isModerator } from "@/lib/utils";
 import { MembershipPlanSchema } from "@/schemas";
 import * as z from "zod";
+
+export async function getMembershipPlans() {
+  const plans = await db.membershipPlan.findMany({
+    include: {
+      benefits: true,
+    },
+    orderBy: {
+      price: "asc",
+    },
+  });
+  return plans;
+}
 
 export async function createMembershipPlan(
   values: z.infer<typeof MembershipPlanSchema>
@@ -14,25 +27,40 @@ export async function createMembershipPlan(
     return { error: "Invalid fields!" };
   }
 
+  const membershipPlan = await db.membershipPlan.findFirst({
+    where: {
+      OR: [
+        {
+          name: values.name.toUpperCase(),
+        },
+        {
+          price: values.price,
+        },
+        {
+          durationInMonth: values.durationInMonth,
+        },
+      ],
+    },
+  });
+
+  if (membershipPlan) {
+    return {
+      error: "Same Name or Price or duration already exists",
+    };
+  }
+
   const user = await currentUser();
 
   if (!user || user.role !== "ADMIN") {
     return { error: "Permission denied" };
   }
 
-  const { name, price, durationInMonth, benefitIds } = validatedFields.data;
-
-  const benefitObjects = benefitIds.map((item) => ({
-    id: item,
-  }));
-
   await db.membershipPlan.create({
     data: {
-      name,
-      price,
-      durationInMonth,
+      ...values,
+      name: values.name,
       benefits: {
-        connect: benefitObjects,
+        connect: values.benefitIds.map((benefitId) => ({ id: benefitId })),
       },
     },
   });
@@ -40,11 +68,82 @@ export async function createMembershipPlan(
   return { success: "Membership Plan Created!" };
 }
 
-export async function getMembershipPlans() {
-  const plans = await db.membershipPlan.findMany({
+export async function updateMembershipPlan({
+  values,
+  membershipPlanId,
+}: {
+  values: z.infer<typeof MembershipPlanSchema>;
+  membershipPlanId: string;
+}) {
+  const validatedFields = MembershipPlanSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
+  }
+
+  const user = await currentUser();
+
+  if (!user) {
+    return { error: "Unauthenticated" };
+  }
+
+  if (!membershipPlanId) {
+    return { error: "Membership plan Id is required" };
+  }
+
+  if (!isModerator(user)) {
+    return { error: "Only admin or moderator have this permission" };
+  }
+
+  const plan = await db.membershipPlan.findUnique({
+    where: {
+      id: membershipPlanId,
+      name: values.name.toUpperCase(),
+    },
     include: {
       benefits: true,
     },
   });
-  return plans;
+
+  if (!plan) {
+    return { error: "Membership plan not found" };
+  }
+
+  await db.membershipPlan.update({
+    where: {
+      id: membershipPlanId,
+    },
+    data: {
+      benefits: {
+        disconnect: plan.benefits.map((benefit) => ({ id: benefit.id })),
+        connect: values.benefitIds.map((benefitId) => ({ id: benefitId })),
+      },
+    },
+  });
+
+  return { success: "Membership Plan Updated!" };
+}
+
+export async function deleteMembershipPlan(membershipPlanId: string) {
+  const user = await currentUser();
+
+  if (!user) {
+    return { error: "Unauthenticated" };
+  }
+
+  if (!membershipPlanId) {
+    return { error: "Membership plan Id is requried" };
+  }
+
+  if (!isModerator(user)) {
+    return { error: "Only admin or moderator have this permission" };
+  }
+
+  await db.membershipPlan.delete({
+    where: {
+      id: membershipPlanId,
+    },
+  });
+
+  return { success: "Membership Plan Deleted!" };
 }

@@ -10,6 +10,7 @@ import { X } from "lucide-react";
 interface ImageUploadProps {
   value?: string;
   onChange: (value: string) => void;
+  pronoun: string;
 }
 
 export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
@@ -36,10 +37,10 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
         <UploadButton
           endpoint="imageUploader"
           appearance={{
-            button: {
-              backgroundColor: "#E11319",
-            },
+            button: "ut-uploading: bg-primary after:bg-white/50",
+            allowedContent: "fjsldfjl",
           }}
+          
           onClientUploadComplete={(res) => {
             onChange(res?.[0].url);
           }}

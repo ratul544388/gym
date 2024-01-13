@@ -1,18 +1,17 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
-import { Member } from "@prisma/client";
-import { Calendar, EditIcon, TrashIcon } from "lucide-react";
-import { ActionDropdownMenu } from "../action-dropdown-menu";
 import { MemberWithPlan } from "@/types";
+import { Calendar, EditIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ActionDropdownMenu } from "../action-dropdown-menu";
 
 interface CellActionProps {
   member: MemberWithPlan;
 }
 
 export const CellAction = ({ member }: CellActionProps) => {
-  const { onOpen, isOpen } = useModal();
+  const { onOpen } = useModal();
   const router = useRouter();
   return (
     <ActionDropdownMenu
@@ -20,12 +19,15 @@ export const CellAction = ({ member }: CellActionProps) => {
         {
           label: "Renew",
           icon: Calendar,
-          onClick: () => router.push(`/members/${member.id}/renew`),
+          onClick: () =>
+            router.push(
+              `/admin/members/${member.id}/renew/?selected_plan=${member.membershipPlanId}`
+            ),
         },
         {
           label: "Edit",
           icon: EditIcon,
-          onClick: () => router.push(`/members/${member.id}/edit`),
+          onClick: () => router.push(`/admin/members/${member.id}/edit`),
         },
         {
           label: "Delete",

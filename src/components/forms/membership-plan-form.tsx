@@ -4,7 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { createMembershipPlan } from "@/actions/membership-plans-action";
+import {
+  createMembershipPlan,
+  updateMembershipPlan,
+} from "@/actions/membership-plans-action";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,29 +25,32 @@ import toast from "react-hot-toast";
 import { CardWrapper } from "../card-wrapper";
 import { Benefit } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
+import { PlanWithBenefits } from "@/types";
+import { useRouter } from "next/navigation";
 
 interface MembershipPlanFormProps {
   membershipBenefits: Benefit[];
+  membershipPlan?: PlanWithBenefits;
 }
 
 export const MembershipPlanForm = ({
   membershipBenefits,
+  membershipPlan,
 }: MembershipPlanFormProps) => {
   const [isPending, startTranistion] = useTransition();
+  const router = useRouter();
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MembershipPlanSchema>>({
     resolver: zodResolver(MembershipPlanSchema),
     defaultValues: {
-      name: "",
-      durationInMonth: undefined,
-      price: undefined,
-      benefitIds: [],
+      name: membershipPlan?.name || "",
+      durationInMonth: membershipPlan?.durationInMonth || undefined,
+      price: membershipPlan?.price || undefined,
+      benefitIds: membershipPlan?.benefitIds || [],
     },
   });
 
   const benefitIds = form.getValues("benefitIds");
-
-  console.log(benefitIds.length);
 
   const handleCheck = (id: string) => {
     const isChecked = benefitIds.includes(id);
@@ -60,15 +66,30 @@ export const MembershipPlanForm = ({
 
   function onSubmit(values: z.infer<typeof MembershipPlanSchema>) {
     startTranistion(() => {
-      createMembershipPlan({ ...values, name: values.name.toUpperCase() }).then(
-        ({ success, error }) => {
+      if (membershipPlan) {
+        updateMembershipPlan({
+          values,
+          membershipPlanId: membershipPlan.id,
+        }).then(({ success, error }) => {
           if (success) {
             toast.success(success);
+            router.push("/admin/membership-plans");
+            router.refresh();
           } else if (error) {
             toast.error(error);
           }
-        }
-      );
+        });
+      } else {
+        createMembershipPlan(values).then(({ success, error }) => {
+          if (success) {
+            toast.success(success);
+            router.push("/admin/membership-plans");
+            router.refresh();
+          } else if (error) {
+            toast.error(error);
+          }
+        });
+      }
     });
   }
   return (
@@ -146,6 +167,7 @@ export const MembershipPlanForm = ({
                       >
                         <Checkbox
                           id={item.id}
+                          checked={benefitIds.includes(item.id)}
                           onClick={() => handleCheck(item.id)}
                         />
                         <label
@@ -166,7 +188,7 @@ export const MembershipPlanForm = ({
             disabled={isPending}
             className="ml-auto"
           >
-            Submit
+            {membershipPlan ? "Save" : "Create"}
           </FramerButton>
         </form>
       </Form>

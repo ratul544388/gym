@@ -13,7 +13,7 @@ export const Logo = ({ className }: LogoProps) => {
   return (
     <Link
       href="/"
-      className={cn("relative w-[150px] h-[40px] overflow-hidden", className)}
+      className={cn("relative w-[180px] h-[50px] overflow-hidden", className)}
     >
       <Image
         src="/images/logo-light.png"

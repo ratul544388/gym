@@ -7,9 +7,18 @@ import { differenceInDays, format } from "date-fns";
 import { Avatar } from "../avatar";
 import { Badge } from "../ui/badge";
 import { CellAction } from "./cell-action";
+import { StatusCellHeader } from "./status-cell-header";
 
 export const columns: ColumnDef<Member & { membershipPlan: MembershipPlan }>[] =
   [
+    {
+      accessorKey: "memberId",
+      header: "Id",
+      cell: ({ row }) => {
+        const id = row.original.memberId;
+        return id < 10 ? `0${id}` : id;
+      },
+    },
     {
       accessorKey: "name",
       header: "Name",
@@ -38,7 +47,7 @@ export const columns: ColumnDef<Member & { membershipPlan: MembershipPlan }>[] =
     },
     {
       accessorKey: "phone",
-      header: "Email",
+      header: "Phone",
     },
     {
       accessorKey: "address",
@@ -60,7 +69,9 @@ export const columns: ColumnDef<Member & { membershipPlan: MembershipPlan }>[] =
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: () => {
+        return <StatusCellHeader />;
+      },
       cell: ({ row }) => {
         const getMembershipStatus = ({
           startDate,

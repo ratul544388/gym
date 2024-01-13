@@ -1,6 +1,7 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
+import { formatText } from "@/lib/utils";
 import { PlanWithBenefits } from "@/types";
 import { MembershipPlan } from "@prisma/client";
 import { motion, useAnimation } from "framer-motion";
@@ -22,14 +23,18 @@ export const MembershipPlanPicker = ({
   return (
     <motion.div
       onClick={() =>
-        onOpen("MEMBERSHIP_PLAN_PICKER_MODAL", { membershipPlans })
+        onOpen("MEMBERSHIP_PLAN_PICKER_MODAL", {
+          membershipPlans,
+        })
       }
       onMouseEnter={() => animation.start("iconAnimation")}
       onMouseLeave={() => animation.start("stopIconAnimation")}
       className="relative p-5 rounded-xl border hover:bg-primary/5 transition-colors cursor-pointer shadow flex items-center justify-center mb-5"
     >
       <div className="ml-auto flex flex-col items-center">
-        <h3 className="font-bold text-2xl text-primary">{selectedPlan.name}</h3>
+        <h3 className="font-bold text-2xl text-primary">
+          {formatText(selectedPlan.name)}
+        </h3>
         <p className="text-muted-foreground text-sm font-semibold">
           Duration: {selectedPlan.durationInMonth} Month
         </p>

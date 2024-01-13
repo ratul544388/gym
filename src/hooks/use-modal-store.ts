@@ -8,9 +8,10 @@ export type ModalType =
   | "EDIT_MEMBER_MODAL"
   | "DELETE_BENEFIT_MODAL"
   | "ADMISSION_FEE_MODAL"
+  | "DELETE_MEMBERSHIP_PLAN_MODAL";
 interface ModalData {
   membershipPlans?: PlanWithBenefits[];
-  selectedPlan?: MembershipPlan;
+  membershipPlanId?: string;
   memberId?: string;
   benefit?: Benefit;
   member?: MemberWithPlan;

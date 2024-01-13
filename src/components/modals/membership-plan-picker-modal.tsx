@@ -29,7 +29,6 @@ const listVariants = {
 };
 
 export const MembershipPlanPickerModal = () => {
-  const pathname = usePathname();
   const { isOpen, type, onClose, data } = useModal();
   const { membershipPlans } = data;
   const MotionButton = motion(Button);
@@ -38,7 +37,7 @@ export const MembershipPlanPickerModal = () => {
   const searchParams = useSearchParams();
 
   const [active, setActive] = useState<string>();
-
+  const pathname = usePathname();
   useEffect(() => {
     const initialActive =
       membershipPlans?.find(
@@ -52,8 +51,9 @@ export const MembershipPlanPickerModal = () => {
     return null;
   }
 
-  const handleSelect = (planId: string) => {
-    router.push(`${pathname}?selected_plan=${planId}`);
+  const handleSelect = (plan: string) => {
+    const url = `${pathname}/?selected_plan=${plan}`;
+    router.push(url);
     onClose();
   };
 

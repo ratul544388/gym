@@ -43,11 +43,13 @@ export const MemberForm = ({
   selectedPlan,
   member,
   admissionFee,
+  isModerator,
 }: {
   membershipPlans: PlanWithBenefits[];
   selectedPlan: MembershipPlan;
   member?: MemberWithPlan;
   admissionFee: number;
+  isModerator?: boolean;
 }) => {
   const [isPending, startTranistion] = useTransition();
   const router = useRouter();
@@ -67,6 +69,8 @@ export const MemberForm = ({
     },
   });
 
+  const pronoun = isModerator ? "Member's" : "Your";
+
   function onSubmit(values: z.infer<typeof MemberSchema>) {
     const endDate = getEndingDate({
       startDate: form.getValues("startDate"),
@@ -80,6 +84,7 @@ export const MemberForm = ({
             if (success) {
               toast.success(success);
               onClose();
+              router.push("/admin/members");
               router.refresh();
             } else if (error) {
               toast.error(error);
@@ -97,7 +102,7 @@ export const MemberForm = ({
         }).then(({ error, success }) => {
           if (success) {
             toast.success(success);
-            router.push("/members");
+            router.push(isModerator ? "/admin/members" : "/dashboard");
             router.refresh();
           } else if (error) {
             toast.error(error);
@@ -129,6 +134,7 @@ export const MemberForm = ({
                 <FormItem className="row-span-2 sm:col-span-3">
                   <FormControl>
                     <ImageUpload
+                      pronoun={pronoun}
                       value={field.value}
                       onChange={field.onChange}
                     />
@@ -145,7 +151,7 @@ export const MemberForm = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter Member's name"
+                      placeholder={`Enter ${pronoun} Name`}
                       isPending={isPending}
                       {...field}
                     />
@@ -163,7 +169,7 @@ export const MemberForm = ({
                   <FormControl>
                     <Input
                       isPending={isPending}
-                      placeholder="Enter member's phone number"
+                      placeholder={`Enter ${pronoun} Phone Number`}
                       type="number"
                       {...field}
                     />
@@ -182,7 +188,7 @@ export const MemberForm = ({
                 <FormControl>
                   <Input
                     isPending={isPending}
-                    placeholder="Enter member's address"
+                    placeholder={`Enter ${pronoun} Address`}
                     disabled={isPending}
                     {...field}
                   />
@@ -191,24 +197,26 @@ export const MemberForm = ({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email (optional)</FormLabel>
-                <FormControl>
-                  <Input
-                    isPending={isPending}
-                    placeholder="Enter member's email"
-                    disabled={isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {isModerator && (
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email (optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      isPending={isPending}
+                      placeholder={`Enter ${pronoun} Email`}
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="age"
@@ -218,7 +226,7 @@ export const MemberForm = ({
                 <FormControl>
                   <Input
                     isPending={isPending}
-                    placeholder="Enter member's age"
+                    placeholder={`Enter ${pronoun} Age`}
                     {...field}
                     type="number"
                   />

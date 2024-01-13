@@ -4,9 +4,9 @@ import { ReactNode } from "react";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <MaxWidthWrapper className="min-h-screen md:pl-0">
+    <MaxWidthWrapper className="h-full md:pl-0 pb-10">
       <Sidebar />
-      <div className="md:pl-[276px]">{children}</div>
+      <div className="md:pl-[276px] h-full">{children}</div>
     </MaxWidthWrapper>
   );
 }

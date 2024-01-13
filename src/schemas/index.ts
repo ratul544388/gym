@@ -10,7 +10,10 @@ export const MemberSchema = z.object({
     .string()
     .min(11, { message: "Phone number must contain 11 digits" })
     .max(11, { message: "Phone number must contain 11 digits" }),
-  email: z.string().max(60, { message: "Email length is very high" }),
+  email: z
+    .string()
+    .max(60, { message: "Email length is very high" })
+    .optional(),
   address: z
     .string()
     .min(5, { message: "Address is too short" })
@@ -38,17 +41,17 @@ export const MembershipPlanSchema = z.object({
     .string()
     .min(1, { message: "Name is required" })
     .max(50, { message: "Name cannot be more than 50 characters in length" }),
-  durationInMonth: z.coerce.number(),
+  durationInMonth: z.coerce
+    .number()
+    .min(1, { message: "Duration cannot be less than 1 month" })
+    .max(60, { message: "Duration cannot be higher than 5 years" }),
   price: z.coerce
     .number({
       required_error: "Price is required",
       invalid_type_error: "Price is required",
     })
-    .min(500, {
-      message: "Ensure the price is within the range of 500 to 20,000 DBT.",
-    })
-    .max(20000, {
-      message: "Ensure the price is within the range of 500 to 20,000 DBT.",
+    .max(100000, {
+      message: "Price is too high",
     }),
   benefitIds: z.array(z.string()),
 });
@@ -63,6 +66,5 @@ export const MembershipBenefitSchema = z.object({
 export const AdmissionFeeSchema = z.object({
   admissionFee: z.coerce
     .number()
-    .min(300, { message: "Admission Fee can not be less than 300 BDT." })
-    .max(3000, { message: "Admission Fee can not be higher than 3000 BDT." }),
+    .max(10000, { message: "Admission fee is too high." }),
 });

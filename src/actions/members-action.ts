@@ -3,16 +3,31 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
+import { isModerator } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
+import { Gender } from "@prisma/client";
 import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
 import * as z from "zod";
 
+export type OrderBy = "asc" | "desc";
 export const getMembers = async ({
   type,
+  take = 10,
+  page = 1,
+  q,
+  gender,
+  orderby,
 }: {
   type?: "TODAY_JOINED" | "THIS_MONTH_JOINED" | "TODAY_RENEWED";
+  take?: number;
+  page?: number;
+  q?: string;
+  gender?: Gender;
+  orderby?: OrderBy;
 } = {}) => {
   const today = new Date();
+  const skip = (page - 1) * take;
+
   const members = await db.member.findMany({
     where: {
       ...(type === "TODAY_JOINED"
@@ -68,15 +83,44 @@ export const getMembers = async ({
               },
             },
           }
+        : q
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+              {
+                phone: {
+                  contains: q,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : gender
+        ? {
+            gender,
+          }
         : {}),
     },
     orderBy: {
-      createdAt: "desc",
+      ...(orderby
+        ? {
+            endDate: orderby,
+          }
+        : {
+            createdAt: "desc",
+          }),
     },
     include: {
       membershipPlan: true,
       renews: true,
     },
+    take,
+    skip,
   });
 
   return members;
@@ -101,26 +145,46 @@ export async function createMember({
 
   const user = await currentUser();
 
-  const isModerator =
-    user && (user.role === "ADMIN" || user.role === "MODERATOR");
-
-  if (!isModerator) {
-    return {
-      error:
-        "Permission Denied: Only administrators or moderators are authorized to perform this operation.",
-    };
+  if (!user) {
+    return { error: "Unauthenticated!" };
   }
 
-  await db.member.create({
-    data: {
-      ...validatedFields.data,
-      cost,
-      endDate,
-      membershipPlanId,
+  const existingEmail = await db.member.findUnique({
+    where: {
+      email: values.email,
     },
   });
 
-  return { success: "Member Created Successfully!" };
+  if (existingEmail) {
+    return { error: "Email already exists" };
+  }
+
+  const existingPhone = await db.member.findUnique({
+    where: {
+      phone: values.phone,
+    },
+  });
+
+  if (existingPhone) {
+    return { error: "Email already exists" };
+  }
+
+  const totalMembers = await db.member.count();
+
+  await db.member.create({
+    data: {
+      ...values,
+      memberId: totalMembers + 1,
+      cost,
+      endDate,
+      membershipPlanId,
+      ...(isModerator(user) ? { isPaid: true } : { email: user.email }),
+    },
+  });
+
+  return {
+    success: isModerator(user) ? "Member Created Successfully!" : "Success",
+  };
 }
 
 export async function updateMember({
@@ -140,10 +204,7 @@ export async function updateMember({
 
   const user = await currentUser();
 
-  const isModerator =
-    user && (user.role === "ADMIN" || user.role === "MODERATOR");
-
-  if (!isModerator) {
+  if (!isModerator(user)) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",
@@ -170,10 +231,7 @@ export async function updateMember({
 export async function deleteMember(memberId: string) {
   const user = await currentUser();
 
-  const isModerator =
-    user && (user.role === "ADMIN" || user.role === "MODERATOR");
-
-  if (!isModerator) {
+  if (!isModerator(user)) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",

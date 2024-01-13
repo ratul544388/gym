@@ -19,9 +19,16 @@ export const getEndingDate = ({
 };
 
 export const formatText = (text: string) => {
-  return text.charAt(0).toUpperCase() + text.toLowerCase().slice(1);
+  return text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
-export const isModerator = (user: User) => {
-  return user && (user.role === "ADMIN" || user.role === "MODERATOR");
+export const isModerator = (user: User | null) => {
+  return !!(user && (user.role === "ADMIN" || user.role === "MODERATOR"));
+};
+
+export const formatMonth = (duration: number) => {
+  return duration > 1 ? "Months" : "Month";
 };

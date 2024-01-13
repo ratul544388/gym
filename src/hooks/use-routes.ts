@@ -1,20 +1,57 @@
-import { Home, LayoutDashboard, Settings, ShieldCheck, Users2 } from "lucide-react";
+import {
+  HelpCircle,
+  LayoutDashboard,
+  Settings,
+  ShieldCheck,
+  Users2,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export const useRoutes = () => {
+export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
   const pathname = usePathname();
-  const routes = [
+
+  const adminRoutes = [
     {
       label: "Dashboard",
       icon: LayoutDashboard,
-      href: "/dashboard",
+      href: "/admin/dashboard",
       active: pathname.includes("dashboard"),
     },
     {
       label: "Members",
       icon: Users2,
-      href: "/members",
-      active: ["/members", "/members/new", "/members/edit"].includes(pathname),
+      href: "/admin/members",
+      active: [
+        "/admin/members",
+        "/admin/members/new",
+        "/admin/members/edit",
+      ].includes(pathname),
+    },
+    {
+      label: "Membership Plans",
+      icon: ShieldCheck,
+      href: "/admin/membership-plans",
+      active: ["/membership-plans"].includes(pathname),
+    },
+    {
+      label: "Settings",
+      icon: Settings,
+      href: "/admin/settings",
+      active: pathname.includes("settings"),
+    },
+    {
+      label: "FAQ",
+      icon: HelpCircle,
+      href: "/faq",
+      active: pathname.includes("faq"),
+    },
+  ];
+  const userRoutes = [
+    {
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+      active: pathname.includes("dashboard"),
     },
     {
       label: "Membership Plans",
@@ -23,12 +60,12 @@ export const useRoutes = () => {
       active: ["/membership-plans"].includes(pathname),
     },
     {
-      label: "Settings",
-      icon: Settings,
-      href: "/settings",
-      active: pathname.includes("settings"),
+      label: "FAQ",
+      icon: HelpCircle,
+      href: "/faq",
+      active: pathname.includes("faq"),
     },
   ];
 
-  return routes;
+  return isModerator ? adminRoutes : userRoutes;
 };
