@@ -22,14 +22,8 @@ const Page = async ({
     },
   });
 
-  if (existingMember?.isPaid) {
+  if (existingMember) {
     redirect("/dashboard");
-  }
-
-  if (!existingMember?.isPaid) {
-    redirect(
-      `/membership-plans/enroll/success?plan_id=${existingMember?.membershipPlanId}`
-    );
   }
 
   const selectedPlan = await db.membershipPlan.findUnique({

@@ -7,7 +7,7 @@ export const Sidebar = async () => {
   const user = await currentUser();
 
   return (
-    <aside className="fixed inset-y-0 w-[260px] border-r pt-20 pb-3 hidden md:flex flex-col">
+    <aside className="fixed inset-y-0 w-[260px] border-r pt-24 pb-3 hidden md:flex flex-col">
       <SidebarLinks isModerator={isModerator(user)} />
       <ThemeToggler className="ml-10 mt-auto" />
     </aside>

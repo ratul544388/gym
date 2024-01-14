@@ -228,7 +228,13 @@ export async function updateMember({
   return { success: "Member updated!" };
 }
 
-export async function deleteMember(memberId: string) {
+export async function deleteMember({
+  memberId,
+  saveRevenue,
+}: {
+  memberId: string;
+  saveRevenue: boolean;
+}) {
   const user = await currentUser();
 
   if (!isModerator(user)) {
@@ -238,11 +244,66 @@ export async function deleteMember(memberId: string) {
     };
   }
 
+  if (saveRevenue) {
+    const defaultSettings = await db.defaultSettings.findFirst();
+    if (!defaultSettings) {
+      return { error: "Default settings not found" };
+    }
+
+    const member = await db.member.findUnique({
+      where: {
+        id: memberId,
+      },
+      include: { renews: true },
+    });
+
+    if (!member) {
+      return { error: "Member not found!" };
+    }
+
+    const renewCosts = member.renews.reduce((total, renew) => {
+      return total + renew.cost;
+    }, 0);
+
+    const revenueFormMember = member.cost + renewCosts;
+
+    await db.defaultSettings.update({
+      where: {
+        id: defaultSettings.id,
+      },
+      data: {
+        savedRevenue: defaultSettings.savedRevenue + revenueFormMember,
+      },
+    });
+  }
+
   await db.member.delete({
     where: {
       id: memberId,
     },
   });
 
-  return { success: "New Benefit Added!" };
+  return { success: "Member Deleted!" };
+}
+
+export async function approveMember(memberId: string) {
+  const user = await currentUser();
+
+  if (!isModerator(user)) {
+    return {
+      error:
+        "Permission Denied: Only administrators or moderators are authorized to perform this operation.",
+    };
+  }
+
+  await db.member.update({
+    where: {
+      id: memberId,
+    },
+    data: {
+      isPaid: true,
+    },
+  });
+
+  return { success: "Success!" };
 }

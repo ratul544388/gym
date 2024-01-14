@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 export const MobileSidebar = ({ isModerator }: { isModerator: boolean }) => {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   const handleClick = () => {
     if (open) {
@@ -21,16 +20,11 @@ export const MobileSidebar = ({ isModerator }: { isModerator: boolean }) => {
     }
   };
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
   return (
     <Sheet open={open} onOpenChange={handleClick}>
       <SheetTrigger
         className={cn(
-          "flex md:hidden items-center justify-center h-10 w-10 rounded-md hover:bg-accent transition",
-          pathname === "/" && "hidden"
+          "flex md:hidden items-center justify-center h-10 w-10 rounded-md hover:bg-accent transition"
         )}
         onClick={handleClick}
       >
@@ -38,7 +32,11 @@ export const MobileSidebar = ({ isModerator }: { isModerator: boolean }) => {
       </SheetTrigger>
       <SheetContent side="left" className="p-0 py-3 flex flex-col gap-5">
         <Logo className="ml-10" />
-        <SidebarLinks layoutId="mobileSidebar" isModerator={isModerator} />
+        <SidebarLinks
+          layoutId="mobileSidebar"
+          isModerator={isModerator}
+          onOpenChange={() => open && setOpen(false)}
+        />
         <ThemeToggler className="mt-auto ml-10" />
       </SheetContent>
     </Sheet>

@@ -1,7 +1,9 @@
 import { getMembershipPlans } from "@/actions/membership-plans-action";
 import { MemberForm } from "@/components/forms/member-form";
 import { PageHeader } from "@/components/page-header";
+import { currentUser } from "@/lib/current-user";
 import db from "@/lib/db";
+import { isModerator } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
 const NewMember = async ({
@@ -10,6 +12,7 @@ const NewMember = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const membershipPlans = await getMembershipPlans();
+  const user = await currentUser();
 
   const selectedPlan =
     membershipPlans.find((plan) => plan.id === searchParams.selected_plan) ||
@@ -17,7 +20,7 @@ const NewMember = async ({
 
   const defaultSettings = await db.defaultSettings.findFirst();
 
-  if (!selectedPlan || !defaultSettings?.admissionFee) {
+  if (!selectedPlan || !defaultSettings) {
     redirect("/admin/membership-plans/new");
   }
 
@@ -28,6 +31,7 @@ const NewMember = async ({
         admissionFee={defaultSettings.admissionFee}
         membershipPlans={membershipPlans}
         selectedPlan={selectedPlan}
+        isModerator={isModerator(user)}
       />
     </div>
   );

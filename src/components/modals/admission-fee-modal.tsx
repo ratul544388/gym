@@ -18,10 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { AdmissionFeeSchema } from "@/schemas";
 import { Input } from "../ui/input";
-import {
-  createAdmissionFee,
-  updateAdmissionFee,
-} from "@/actions/admission-fee-action";
+import { createAdmissionFee } from "@/actions/admission-fee-action";
 import toast from "react-hot-toast";
 
 export const AdmissionFeeModal = () => {
@@ -32,33 +29,21 @@ export const AdmissionFeeModal = () => {
   const form = useForm<z.infer<typeof AdmissionFeeSchema>>({
     resolver: zodResolver(AdmissionFeeSchema),
     defaultValues: {
-      admissionFee: admissionFee || undefined,
+      admissionFee: undefined,
     },
   });
 
   const onSubmit = (values: z.infer<typeof AdmissionFeeSchema>) => {
     startTranistion(() => {
-      if (admissionFee) {
-        updateAdmissionFee(values.admissionFee).then(({ error, success }) => {
-          if (success) {
-            toast.success(success);
-            onClose();
-            router.refresh();
-          } else if (error) {
-            toast.error(error);
-          }
-        });
-      } else {
-        createAdmissionFee(values.admissionFee).then(({ error, success }) => {
-          if (success) {
-            toast.success(success);
-            onClose();
-            router.refresh();
-          } else if (error) {
-            toast.error(error);
-          }
-        });
-      }
+      createAdmissionFee(values).then(({ error, success }) => {
+        if (success) {
+          toast.success(success);
+          onClose();
+          router.refresh();
+        } else if (error) {
+          toast.error(error);
+        }
+      });
     });
   };
 
@@ -84,7 +69,8 @@ export const AdmissionFeeModal = () => {
                       placeholder="Admission Fee"
                       isPending={isPending}
                       autoFocus
-                      {...field}
+                      value={field.value!}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

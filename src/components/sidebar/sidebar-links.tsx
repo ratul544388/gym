@@ -8,16 +8,19 @@ export const SidebarLinks = ({
   className,
   layoutId = "desktopSidebar",
   isModerator,
+  onOpenChange,
 }: {
   layoutId?: string;
   className?: string;
   isModerator: boolean;
+  onOpenChange?: () => void;
 }) => {
   const routes = useRoutes({ isModerator });
   return (
     <nav className={cn(className)}>
       {routes.map((route) => (
         <Link
+          onClick={() => onOpenChange?.()}
           href={route.href}
           key={route.href}
           className={cn(

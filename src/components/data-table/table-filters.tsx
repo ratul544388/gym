@@ -1,12 +1,12 @@
 "use client";
 
+import { MembershipPlan } from "@prisma/client";
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Filter } from "./filter";
 import { TableSearchInput } from "./table-search-input";
-import { MembershipPlan } from "@prisma/client";
 
 export const TableFilters = ({
   membershipPlans,
@@ -19,7 +19,7 @@ export const TableFilters = ({
 
   const handleReset = () => {
     setValue("");
-    router.push("/members");
+    router.push("/admin/members");
   };
 
   return (

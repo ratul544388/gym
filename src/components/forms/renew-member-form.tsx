@@ -1,23 +1,18 @@
 "use client";
 
-import { renewMember } from "@/actions/renew-member-action";
 import { Button } from "@/components/ui/button";
-import { formatText, getEndingDate } from "@/lib/utils";
-import {
-  MemberWithPlan,
-  MemberWithPlanAndRenew,
-  PlanWithBenefits,
-} from "@/types";
+import { formatText } from "@/lib/utils";
+import { MemberWithPlanAndRenew, PlanWithBenefits } from "@/types";
 import { MembershipPlan } from "@prisma/client";
-import { differenceInDays, format } from "date-fns";
+import { format } from "date-fns";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import toast from "react-hot-toast";
 import { CardWrapper } from "../card-wrapper";
 import { MembershipPlanPicker } from "../membership-plan-picker";
 import { Separator } from "../ui/separator";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const RenewMemberForm = ({
   membershipPlans,
@@ -28,42 +23,7 @@ export const RenewMemberForm = ({
   selectedPlan: MembershipPlan;
   member: MemberWithPlanAndRenew;
 }) => {
-  const [isPending, startTranistion] = useTransition();
-  const router = useRouter();
-  const FramerButton = motion(Button);
-
-  function onSubmit() {
-    const isInvalidMember = () => {
-      const difference = differenceInDays(member.endDate, new Date());
-      return difference < -30;
-    };
-
-    const startDate = isInvalidMember() ? new Date() : member.endDate;
-    const endDate = getEndingDate({
-      startDate,
-      durationInMonth: selectedPlan.durationInMonth,
-    });
-    const cost = selectedPlan.price;
-    startTranistion(() => {
-      renewMember({
-        memberId: member.id,
-        membershipPlanId: member.membershipPlanId,
-        endDate,
-        cost,
-      }).then(({ error, success }) => {
-        if (success) {
-          toast.success(success);
-          router.push("/admin/members");
-          router.refresh();
-        } else if (error) {
-          toast.error(error);
-        } else {
-          toast.error("Something went wrong");
-        }
-      });
-    });
-  }
-
+  const { onOpen } = useModal();
   const memberDetails = [
     {
       label: "Name",
@@ -131,15 +91,18 @@ export const RenewMemberForm = ({
               Cost: <span className="text-primary">{selectedPlan.price}৳</span>
             </p>
           </div>
-          <FramerButton
-            onClick={onSubmit}
-            disabled={isPending}
-            whileTap={{ scale: 1.05 }}
+          <Button
+            onClick={() =>
+              onOpen("RENEW_MEMBER_MODAL", {
+                memberId: member.id,
+                membershipPlanId: selectedPlan.id,
+              })
+            }
             className="ml-auto w-full xs:w-fit"
             type="button"
           >
             Renew
-          </FramerButton>
+          </Button>
         </section>
       </div>
     </CardWrapper>

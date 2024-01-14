@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { useModal } from "@/hooks/use-modal-store";
 import { getEndingDate } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
@@ -53,6 +54,7 @@ export const MemberForm = ({
 }) => {
   const [isPending, startTranistion] = useTransition();
   const router = useRouter();
+  const confetti = useConfettiStore();
   const { onClose } = useModal();
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MemberSchema>>({
@@ -76,7 +78,7 @@ export const MemberForm = ({
       startDate: form.getValues("startDate"),
       durationInMonth: selectedPlan.durationInMonth,
     });
-    const cost = selectedPlan.price;
+    const cost = selectedPlan.price + admissionFee;
     startTranistion(() => {
       if (member) {
         updateMember({ values, endDate, memberId: member.id }).then(
@@ -86,6 +88,7 @@ export const MemberForm = ({
               onClose();
               router.push("/admin/members");
               router.refresh();
+              confetti.onOpen();
             } else if (error) {
               toast.error(error);
             } else {
@@ -102,8 +105,11 @@ export const MemberForm = ({
         }).then(({ error, success }) => {
           if (success) {
             toast.success(success);
-            router.push(isModerator ? "/admin/members" : "/dashboard");
+            router.push(
+              isModerator ? "/admin/members" : `/admission?success=true`
+            );
             router.refresh();
+            confetti.onOpen();
           } else if (error) {
             toast.error(error);
           } else {

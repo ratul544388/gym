@@ -66,5 +66,33 @@ export const MembershipBenefitSchema = z.object({
 export const AdmissionFeeSchema = z.object({
   admissionFee: z.coerce
     .number()
-    .max(10000, { message: "Admission fee is too high." }),
+    .max(10000, { message: "Admission fee is too high." })
+    .nullable(),
+});
+
+export const FaqSchema = z.object({
+  question: z
+    .string()
+    .min(10, {
+      message: "Question is too short. Expected at least 10 characters",
+    })
+    .max(200, { message: "No more than 200 characters." }),
+  answer: z
+    .string()
+    .min(10, {
+      message: "Question is too short. Expected at least 10 characters.",
+    })
+    .max(10000, { message: "No more than 1000 characters." }),
+});
+
+export const QuestionSchema = z.object({
+  question: z.string().min(10, { message: "Question is too short" }).max(200, {
+    message: "Question is too long. Expected at least 10 characters.",
+  }),
+});
+
+export const AnswerSchema = z.object({
+  answer: z.string().min(10, { message: "Answer is too short" }).max(200, {
+    message: "Answer is too long. Expected at least 10 characters.",
+  }),
 });

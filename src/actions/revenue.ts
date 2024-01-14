@@ -52,7 +52,10 @@ export const getRevenue = async ({
 }: { type?: "TODAY_JOINED" | "THIS_MONTH_JOINED" } = {}) => {
   const members = await getMembers({ type });
 
-  const total = members.reduce((total, member) => {
+  const revenue = members.reduce((total, member) => {
+    if (!member.isPaid) {
+      return total;
+    }
     const renews = member.renews.reduce((total, renew) => {
       return total + renew.cost;
     }, 0);
@@ -60,5 +63,5 @@ export const getRevenue = async ({
     return (total = total + member.cost + renews);
   }, 0);
 
-  return total;
+  return revenue;
 };

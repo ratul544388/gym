@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const user = await currentUser();
   return (
-    <div className="h-full flex flex-col">
+    <main className="h-full flex flex-col">
       <MaxWidthWrapper className="flex-grow">
         <div className="mb-12 mt-14 flex flex-col items-center justify-center text-center">
           <div className="px-6 py-2.5 font-semibold border shadow-md rounded-full">
@@ -158,7 +158,6 @@ export default async function Home() {
           </div>
         </div>
       </MaxWidthWrapper>
-      <Footer />
-    </div>
+    </main>
   );
 }

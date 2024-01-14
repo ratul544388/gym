@@ -3,22 +3,19 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
+import { getEndingDate, isModerator } from "@/lib/utils";
+import { differenceInDays } from "date-fns";
 
 export async function renewMember({
   membershipPlanId,
   memberId,
-  endDate,
-  cost,
 }: {
   membershipPlanId: string;
   memberId: string;
-  endDate: Date;
-  cost: number;
 }) {
   const user = await currentUser();
 
-  if (!membershipPlanId || !memberId || !endDate || !cost) {
+  if (!membershipPlanId || !memberId) {
     return {
       error: "Membership plan ID or member ID or End Date or Cost is missing",
     };
@@ -35,6 +32,38 @@ export async function renewMember({
     };
   }
 
+  const membershipPlan = await db.membershipPlan.findUnique({
+    where: {
+      id: membershipPlanId,
+    },
+  });
+
+  if (!membershipPlan) {
+    return { error: "Membership plan not found" };
+  }
+
+  const member = await db.member.findUnique({
+    where: {
+      id: memberId,
+    },
+  });
+
+  if (!member) {
+    return { error: "Member not found" };
+  }
+
+  const isInvalidMember = () => {
+    const difference = differenceInDays(member.endDate, new Date());
+    return difference < -30;
+  };
+
+  const startDate = isInvalidMember() ? new Date() : member.endDate;
+
+  const endDate = getEndingDate({
+    startDate,
+    durationInMonth: membershipPlan.durationInMonth,
+  });
+
   await db.member.update({
     where: {
       id: memberId,
@@ -44,11 +73,11 @@ export async function renewMember({
       renews: {
         create: {
           membershipPlanId,
-          cost,
+          cost: membershipPlan.price,
         },
       },
     },
   });
 
-  return { success: "Member was renewed!" };
+  return { success: "Member renewed!" };
 }

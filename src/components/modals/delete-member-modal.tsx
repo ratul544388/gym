@@ -12,13 +12,16 @@ import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { deleteMember } from "@/actions/members-action";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 
 export const DeleteMemberModal = () => {
   const { isOpen, type, data, onClose } = useModal();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isCheckedSaveRevenue, setIsCheckSaveRevenue] = useState(false);
 
   const { memberId } = data;
 
@@ -28,17 +31,19 @@ export const DeleteMemberModal = () => {
 
   const onConfirm = () => {
     startTransition(() => {
-      deleteMember(memberId).then(({ error, success }) => {
-        if (success) {
-          toast.success(success);
-          onClose();
-          router.refresh();
-        } else if (error) {
-          toast.success(error);
-        } else {
-          toast.error("Something went wrong");
+      deleteMember({ memberId, saveRevenue: isCheckedSaveRevenue }).then(
+        ({ error, success }) => {
+          if (success) {
+            toast.success(success);
+            onClose();
+            router.refresh();
+          } else if (error) {
+            toast.success(error);
+          } else {
+            toast.error("Something went wrong");
+          }
         }
-      });
+      );
     });
   };
 
@@ -49,9 +54,24 @@ export const DeleteMemberModal = () => {
     >
       <DialogContent className="max-w-[350px]">
         <DialogHeader>
-          <DialogTitle>Are you absolute sure?</DialogTitle>
-          <DialogDescription>Delete The member parmanently.</DialogDescription>
+          <DialogTitle>Delete Member?</DialogTitle>
+          <DialogDescription>
+            This will parmanently delete the member.
+          </DialogDescription>
         </DialogHeader>
+        <div>
+          <div className="flex items-center space-x-2 mt-4 mb-2">
+            <Checkbox
+              id="terms"
+              onCheckedChange={() =>
+                setIsCheckSaveRevenue(!isCheckedSaveRevenue)
+              }
+            />
+            <Label htmlFor="terms">
+              Save the revenue associated with the member.
+            </Label>
+          </div>
+        </div>
         <div className="flex justify-between">
           <Button disabled={isPending} onClick={onClose} variant="ghost">
             Close

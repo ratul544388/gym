@@ -1,5 +1,6 @@
 import {
   HelpCircle,
+  Home,
   LayoutDashboard,
   Settings,
   ShieldCheck,
@@ -11,6 +12,12 @@ export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
   const pathname = usePathname();
 
   const adminRoutes = [
+    {
+      label: "Home",
+      icon: Home,
+      href: "/",
+      active: pathname === "/",
+    },
     {
       label: "Dashboard",
       icon: LayoutDashboard,
@@ -31,7 +38,7 @@ export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
       label: "Membership Plans",
       icon: ShieldCheck,
       href: "/admin/membership-plans",
-      active: ["/membership-plans"].includes(pathname),
+      active: ["/admin/membership-plans"].includes(pathname),
     },
     {
       label: "Settings",
@@ -48,6 +55,12 @@ export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
   ];
   const userRoutes = [
     {
+      label: "Home",
+      icon: Home,
+      href: "/",
+      active: pathname === "/",
+    },
+    {
       label: "Dashboard",
       icon: LayoutDashboard,
       href: "/dashboard",
@@ -57,7 +70,7 @@ export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
       label: "Membership Plans",
       icon: ShieldCheck,
       href: "/membership-plans",
-      active: ["/membership-plans"].includes(pathname),
+      active: pathname.includes("membership-plans"),
     },
     {
       label: "FAQ",
