@@ -40,7 +40,7 @@ export default async function RootLayout({
             <ModalProvider />
             <ConfettiProvider />
             <main className="pb-10 min-h-screen flex flex-col gap-3">
-              <Header isModerator={isModerator(user)} />
+              <Header user={user} />
               {children}
             </main>
           </ThemeProvider>
