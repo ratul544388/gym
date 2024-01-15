@@ -15,7 +15,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { AdmissionFeeSchema } from "@/schemas";
 import { Input } from "../ui/input";
 import { createAdmissionFee } from "@/actions/admission-fee-action";
@@ -29,9 +29,15 @@ export const AdmissionFeeModal = () => {
   const form = useForm<z.infer<typeof AdmissionFeeSchema>>({
     resolver: zodResolver(AdmissionFeeSchema),
     defaultValues: {
-      admissionFee: undefined,
+      admissionFee: 0,
     },
   });
+
+  useEffect(() => {
+    if (admissionFee) {
+      form.setValue("admissionFee", admissionFee);
+    }
+  }, [form, admissionFee]);
 
   const onSubmit = (values: z.infer<typeof AdmissionFeeSchema>) => {
     startTranistion(() => {

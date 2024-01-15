@@ -17,6 +17,7 @@ export const getMembers = async ({
   q,
   gender,
   orderby,
+  membershipPlan,
 }: {
   type?: "TODAY_JOINED" | "THIS_MONTH_JOINED" | "TODAY_RENEWED";
   take?: number;
@@ -24,6 +25,7 @@ export const getMembers = async ({
   q?: string;
   gender?: Gender;
   orderby?: OrderBy;
+  membershipPlan?: string;
 } = {}) => {
   const today = new Date();
   const skip = (page - 1) * take;
@@ -103,6 +105,15 @@ export const getMembers = async ({
         : gender
         ? {
             gender,
+          }
+        : membershipPlan
+        ? {
+            membershipPlan: {
+              name: {
+                equals: membershipPlan,
+                mode: "insensitive",
+              },
+            },
           }
         : {}),
     },

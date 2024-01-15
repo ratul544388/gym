@@ -1,18 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 import { formatText } from "@/lib/utils";
 import { MemberWithPlanAndRenew, PlanWithBenefits } from "@/types";
 import { MembershipPlan } from "@prisma/client";
 import { format } from "date-fns";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 import { CardWrapper } from "../card-wrapper";
 import { MembershipPlanPicker } from "../membership-plan-picker";
 import { Separator } from "../ui/separator";
-import { useModal } from "@/hooks/use-modal-store";
 
 export const RenewMemberForm = ({
   membershipPlans,

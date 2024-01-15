@@ -18,10 +18,13 @@ const DashboardPage = async () => {
   const todayRenewed = await getMembers({ type: "TODAY_RENEWED" }).then(
     (res) => res.length
   );
+  const savedRevenue =
+    (await db.defaultSettings.findFirst().then((res) => res?.savedRevenue)) ||
+    0;
   const revenueCard = [
     {
       label: "Total Revenue",
-      count: `${totalRevenue}৳`,
+      count: `${totalRevenue + savedRevenue}৳`,
       growth: "201% ↑ from last month",
       icon: CircleDollarSign,
     },

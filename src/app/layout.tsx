@@ -29,7 +29,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={cn(inter.className)}>
+        <body className={cn(inter.className, "overflow-x-hidden")}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -39,9 +39,9 @@ export default async function RootLayout({
             <ToastProvider />
             <ModalProvider />
             <ConfettiProvider />
-            <main className="min-h-screen flex flex-col h-full">
+            <main className="pb-10 min-h-screen flex flex-col gap-3">
               <Header isModerator={isModerator(user)} />
-              <div className="flex-1 flex-grow pt-5">{children}</div>
+              {children}
             </main>
           </ThemeProvider>
         </body>

@@ -31,10 +31,9 @@ const RenewMemberPage = async ({
     membershipPlans.find((plan) => plan.id === searchParams.selected_plan) ||
     member.membershipPlan;
 
-  const defaultSettings = await db.defaultSettings.findFirst();
 
-  if (!selectedPlan || !defaultSettings?.admissionFee) {
-    redirect("/members");
+  if (!selectedPlan) {
+    redirect("/admin/members");
   }
 
   return (

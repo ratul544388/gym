@@ -7,7 +7,6 @@ import { CheckCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import qs from "query-string";
 
 const boxVariants = {
   hidden: {
@@ -59,9 +58,9 @@ export const MembershipPlanPickerModal = () => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="px-2 pt-12 xs:px-5 h-[100svh] max-h-[500px] overflow-x-hidden overflow-y-auto">
+      <DialogContent className="px-2 pt-12 xs:px-5 h-[100svh] xs:max-h-[500px] overflow-x-hidden overflow-y-auto">
         <div className="flex flex-col gap-3 items-center">
-          <div className="flex items-center border rounded-full">
+          <div className="flex items-center flex-wrap justify-center border rounded-full">
             {membershipPlans.map((plan) => (
               <Button
                 variant="ghost"

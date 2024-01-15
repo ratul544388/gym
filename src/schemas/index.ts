@@ -8,12 +8,20 @@ export const MemberSchema = z.object({
     .max(50, { message: "Name cannot be more than 50 characters in length" }),
   phone: z
     .string()
-    .min(11, { message: "Phone number must contain 11 digits" })
-    .max(11, { message: "Phone number must contain 11 digits" }),
+    .refine((value) => value.length === 11, {
+      message: "Phone number must contain 11 digits in length",
+    })
+    .refine((value) => value.startsWith("01"), {
+      message: "Phone number must start with 01",
+    }),
   email: z
     .string()
-    .max(60, { message: "Email length is very high" })
-    .optional(),
+    .refine(
+      (value) => value === "" || z.string().email().safeParse(value).success,
+      {
+        message: "Invalid Email",
+      }
+    ),
   address: z
     .string()
     .min(5, { message: "Address is too short" })

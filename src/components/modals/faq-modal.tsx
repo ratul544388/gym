@@ -20,11 +20,13 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { Textarea } from "../ui/textarea";
+import { motion } from "framer-motion";
 
 export const FaqModal = () => {
   const { isOpen, type, data, onClose } = useModal();
   const [isPending, startTranistion] = useTransition();
   const router = useRouter();
+
   const { faq } = data;
 
   const form = useForm<z.infer<typeof FaqSchema>>({
@@ -86,9 +88,11 @@ export const FaqModal = () => {
 
   return (
     <Dialog open={isOpen && type === "FAQ_MODAL"} onOpenChange={handleClose}>
-      <DialogContent className="">
+      <DialogContent className="h-[100svh] xs:max-h-[80svh] pt-12">
         <Form {...form}>
-          <form
+          <motion.form
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-6"
           >
@@ -100,9 +104,10 @@ export const FaqModal = () => {
                   <FormLabel>Question</FormLabel>
                   <FormControl>
                     <Textarea
+                      autoFocus={!!!faq}
                       {...field}
                       placeholder="Write the question"
-                      rows={1}
+                      rows={2}
                     />
                   </FormControl>
                   <FormMessage />
@@ -119,7 +124,7 @@ export const FaqModal = () => {
                     <Textarea
                       {...field}
                       placeholder="Write the answer"
-                      rows={1}
+                      rows={2}
                     />
                   </FormControl>
                   <FormMessage />
@@ -129,7 +134,7 @@ export const FaqModal = () => {
             <Button className="ml-auto" disabled={isPending}>
               {faq ? "Save" : "Create"}
             </Button>
-          </form>
+          </motion.form>
         </Form>
       </DialogContent>
     </Dialog>

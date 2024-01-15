@@ -43,13 +43,13 @@ export const MemberForm = ({
   membershipPlans,
   selectedPlan,
   member,
-  admissionFee,
+  admissionFee = 0,
   isModerator,
 }: {
   membershipPlans: PlanWithBenefits[];
   selectedPlan: MembershipPlan;
   member?: MemberWithPlan;
-  admissionFee: number;
+  admissionFee?: number;
   isModerator?: boolean;
 }) => {
   const [isPending, startTranistion] = useTransition();

@@ -1,13 +1,11 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
 import { Logo } from "../logo";
 import MaxWidthWrapper from "../max-width-wrapper";
 import { MobileSidebar } from "../sidebar/mobile-sidebar";
 
 export const Header = ({ isModerator }: { isModerator: boolean }) => {
-  const pathname = usePathname();
   return (
     <header className="sticky z-50 bg-background top-0 inset-x-0 border-b">
       <MaxWidthWrapper className="py-3">

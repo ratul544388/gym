@@ -32,15 +32,15 @@ const EditMemberPage = async ({
 
   const defaultSettings = await db.defaultSettings.findFirst();
 
-  if (!selectedPlan || !defaultSettings?.admissionFee) {
-    redirect("/members");
+  if (!selectedPlan) {
+    redirect("/admin/members");
   }
 
   return (
     <div className="space-y-3">
       <PageHeader label="Edit Member" />
       <MemberForm
-        admissionFee={defaultSettings.admissionFee}
+        admissionFee={defaultSettings?.admissionFee}
         member={member}
         membershipPlans={membershipPlans}
         selectedPlan={selectedPlan}
