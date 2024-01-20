@@ -3,7 +3,7 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { getEndingDate, isModerator } from "@/lib/utils";
+import { isModerator } from "@/lib/utils";
 import { differenceInDays } from "date-fns";
 
 export async function renewMember({
@@ -58,11 +58,9 @@ export async function renewMember({
   };
 
   const startDate = isInvalidMember() ? new Date() : member.endDate;
+  const endDate = new Date(startDate);
 
-  const endDate = getEndingDate({
-    startDate,
-    durationInMonth: membershipPlan.durationInMonth,
-  });
+  endDate.setMonth(endDate.getMonth() + membershipPlan.durationInMonth);
 
   await db.member.update({
     where: {

@@ -52,6 +52,8 @@ export const getRevenue = async ({
 }: { type?: "TODAY_JOINED" | "THIS_MONTH_JOINED" } = {}) => {
   const members = await getMembers({ type });
 
+  console.log(members.length);
+
   const revenue = members.reduce((total, member) => {
     if (!member.isPaid) {
       return total;

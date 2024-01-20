@@ -1,14 +1,14 @@
 "use client";
 
+import { isModerator } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
+import { User } from "@prisma/client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Logo } from "../logo";
 import MaxWidthWrapper from "../max-width-wrapper";
 import { MobileSidebar } from "../sidebar/mobile-sidebar";
-import { User } from "@prisma/client";
-import { isModerator } from "@/lib/utils";
-import { Button, buttonVariants } from "../ui/button";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { buttonVariants } from "../ui/button";
 
 export const Header = ({ user }: { user: User | null }) => {
   const pathname = usePathname();

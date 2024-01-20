@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getEndingDate = ({
+export const getEndDate = ({
   startDate,
   durationInMonth,
 }: {

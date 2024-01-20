@@ -5,7 +5,7 @@ import * as z from "zod";
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { getEndingDate, isModerator } from "@/lib/utils";
+import { isModerator } from "@/lib/utils";
 import { AdmissionFeeSchema } from "@/schemas";
 
 export async function createAdmissionFee(

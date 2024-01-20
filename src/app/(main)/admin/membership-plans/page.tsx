@@ -1,7 +1,6 @@
 import { getMembershipPlans } from "@/actions/membership-plans-action";
 import { MembershipPlanCard } from "@/components/membership-plan-card";
 import { PageHeader } from "@/components/page-header";
-import { currentUser } from "@/lib/current-user";
 
 const MembershipPlanPage = async () => {
   const membershipPlans = await getMembershipPlans();

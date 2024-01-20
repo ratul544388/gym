@@ -23,14 +23,13 @@ import { motion } from "framer-motion";
 import { useTransition } from "react";
 import toast from "react-hot-toast";
 import { CardWrapper } from "../card-wrapper";
-import { Benefit } from "@prisma/client";
+import { Benefit, MembershipPlan } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
-import { PlanWithBenefits } from "@/types";
 import { useRouter } from "next/navigation";
 
 interface MembershipPlanFormProps {
   membershipBenefits: Benefit[];
-  membershipPlan?: PlanWithBenefits;
+  membershipPlan?: MembershipPlan;
 }
 
 export const MembershipPlanForm = ({

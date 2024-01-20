@@ -1,15 +1,15 @@
 "use client";
 
-import { PlanWithBenefits } from "@/types";
-import { MembershipPlan, User } from "@prisma/client";
-import { Check, CheckCircle2, Edit, Trash } from "lucide-react";
-import { Button, buttonVariants } from "./ui/button";
-import Link from "next/link";
-import { cn, formatText, isModerator } from "@/lib/utils";
 import { useModal } from "@/hooks/use-modal-store";
+import { cn, formatText } from "@/lib/utils";
+import { FullMembershipPlan } from "@/types";
+import { Check, Edit, Trash, Users2 } from "lucide-react";
+import Link from "next/link";
+import { Button, buttonVariants } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 interface MembershipPlanCardProps {
-  membershipPlan: PlanWithBenefits;
+  membershipPlan: FullMembershipPlan;
   isModerator?: boolean;
 }
 
@@ -20,7 +20,15 @@ export const MembershipPlanCard = ({
   const { onOpen } = useModal();
   return (
     <div className="flex flex-col p-5 border rounded-xl w-full max-w-[500px] mx-auto dark:bg-secondary/50">
-      <h3 className="font-bold text-2xl">{formatText(membershipPlan.name)}</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-2xl">
+          {formatText(membershipPlan.name)}
+        </h3>
+        <Badge variant="secondary">
+          <Users2 className="h-4 w-4 mr-2" />
+          {membershipPlan.members.length}
+        </Badge>
+      </div>
       <div className="mt-3 space-y-2">
         {membershipPlan.benefits.map((benefit) => (
           <div key={benefit.id} className="flex items-center gap-2">
@@ -54,7 +62,7 @@ export const MembershipPlanCard = ({
               Delete
             </Button>
             <Link
-              href={`/membership-plans/${membershipPlan.id}/edit`}
+              href={`/admin/membership-plans/${membershipPlan.id}/edit`}
               className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
             >
               <Edit className="h-4 w-4 mr-2 mb-0.5" />

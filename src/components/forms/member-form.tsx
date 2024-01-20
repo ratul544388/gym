@@ -17,9 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { useModal } from "@/hooks/use-modal-store";
-import { getEndingDate } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
-import { MemberWithPlan, PlanWithBenefits } from "@/types";
+import { FullMembershipPlan, MemberWithPlan } from "@/types";
 import { Gender, MembershipPlan } from "@prisma/client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -46,7 +45,7 @@ export const MemberForm = ({
   admissionFee = 0,
   isModerator,
 }: {
-  membershipPlans: PlanWithBenefits[];
+  membershipPlans: FullMembershipPlan[];
   selectedPlan: MembershipPlan;
   member?: MemberWithPlan;
   admissionFee?: number;
@@ -74,14 +73,9 @@ export const MemberForm = ({
   const pronoun = isModerator ? "Member's" : "Your";
 
   function onSubmit(values: z.infer<typeof MemberSchema>) {
-    const endDate = getEndingDate({
-      startDate: form.getValues("startDate"),
-      durationInMonth: selectedPlan.durationInMonth,
-    });
-    const cost = selectedPlan.price + admissionFee;
     startTranistion(() => {
       if (member) {
-        updateMember({ values, endDate, memberId: member.id }).then(
+        updateMember({ values, memberId: member.id }).then(
           ({ error, success }) => {
             if (success) {
               toast.success(success);
@@ -99,14 +93,14 @@ export const MemberForm = ({
       } else if (selectedPlan) {
         createMember({
           values,
-          endDate,
           membershipPlanId: selectedPlan.id,
-          cost,
-        }).then(({ error, success }) => {
+        }).then(({ error, success, memberId }) => {
           if (success) {
             toast.success(success);
             router.push(
-              isModerator ? "/admin/members" : `/admission?success=true`
+              isModerator
+                ? `/admin/members/${memberId}`
+                : `/admission?success=true`
             );
             router.refresh();
             confetti.onOpen();

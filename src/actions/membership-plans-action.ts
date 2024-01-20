@@ -10,6 +10,7 @@ export async function getMembershipPlans() {
   const plans = await db.membershipPlan.findMany({
     include: {
       benefits: true,
+      members: true,
     },
     orderBy: {
       price: "asc",
@@ -87,10 +88,6 @@ export async function updateMembershipPlan({
     return { error: "Unauthenticated" };
   }
 
-  if (!membershipPlanId) {
-    return { error: "Membership plan Id is required" };
-  }
-
   if (!isModerator(user)) {
     return { error: "Only admin or moderator have this permission" };
   }
@@ -98,7 +95,6 @@ export async function updateMembershipPlan({
   const plan = await db.membershipPlan.findUnique({
     where: {
       id: membershipPlanId,
-      name: values.name.toUpperCase(),
     },
     include: {
       benefits: true,

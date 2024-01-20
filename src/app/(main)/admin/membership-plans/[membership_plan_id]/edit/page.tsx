@@ -14,9 +14,6 @@ const EditMembershipPlanPage = async ({
     where: {
       id: params.membership_plan_id,
     },
-    include: {
-      benefits: true,
-    },
   });
 
   if (!membershipPlan) {

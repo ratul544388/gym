@@ -3,7 +3,7 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
+import { getEndDate, isModerator } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
 import { Gender } from "@prisma/client";
 import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
@@ -12,7 +12,7 @@ import * as z from "zod";
 export type OrderBy = "asc" | "desc";
 export const getMembers = async ({
   type,
-  take = 10,
+  take,
   page = 1,
   q,
   gender,
@@ -28,7 +28,7 @@ export const getMembers = async ({
   membershipPlan?: string;
 } = {}) => {
   const today = new Date();
-  const skip = (page - 1) * take;
+  const skip = (page - 1) * (take || 0);
 
   const members = await db.member.findMany({
     where: {
@@ -130,7 +130,7 @@ export const getMembers = async ({
       membershipPlan: true,
       renews: true,
     },
-    take,
+    ...(take ? { take } : {}),
     skip,
   });
 
@@ -139,13 +139,9 @@ export const getMembers = async ({
 
 export async function createMember({
   values,
-  endDate,
-  cost,
   membershipPlanId,
 }: {
   values: z.infer<typeof MemberSchema>;
-  endDate: Date;
-  cost: number;
   membershipPlanId: string;
 }) {
   const validatedFields = MemberSchema.safeParse(values);
@@ -160,13 +156,13 @@ export async function createMember({
     return { error: "Unauthenticated!" };
   }
 
-  const existingEmail = await db.member.findUnique({
+  const existingEmail = await db.member.findFirst({
     where: {
       email: values.email,
     },
   });
 
-  if (existingEmail) {
+  if (values.email && existingEmail) {
     return { error: "Email already exists" };
   }
 
@@ -177,17 +173,35 @@ export async function createMember({
   });
 
   if (existingPhone) {
-    return { error: "Email already exists" };
+    return { error: "Phone number already exists" };
   }
 
-  const totalMembers = await db.member.count();
+  const membershipPlan = await db.membershipPlan.findUnique({
+    where: {
+      id: membershipPlanId,
+    },
+  });
 
-  await db.member.create({
+  if (!membershipPlan) {
+    return { error: "Membership plan not found" };
+  }
+
+  const admissionFee =
+    (await db.defaultSettings.findFirst().then((res) => res?.admissionFee)) ||
+    0;
+
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+  endDate.setMonth(endDate.getMonth() + membershipPlan.durationInMonth);
+
+  const cost = membershipPlan.price + admissionFee;
+
+  const member = await db.member.create({
     data: {
       ...values,
-      memberId: totalMembers + 1,
-      cost,
+      startDate,
       endDate,
+      cost,
       membershipPlanId,
       ...(isModerator(user) ? { isPaid: true } : { email: user.email }),
     },
@@ -195,17 +209,16 @@ export async function createMember({
 
   return {
     success: isModerator(user) ? "Member Created Successfully!" : "Success",
+    memberId: member.id,
   };
 }
 
 export async function updateMember({
   values,
   memberId,
-  endDate,
 }: {
   values: z.infer<typeof MemberSchema>;
   memberId: string;
-  endDate: Date;
 }) {
   const validatedFields = MemberSchema.safeParse(values);
 
@@ -222,9 +235,22 @@ export async function updateMember({
     };
   }
 
-  if (!memberId) {
-    return { error: "Member ID is required" };
+  const member = await db.member.findUnique({
+    where: {
+      id: memberId,
+    },
+    include: {
+      membershipPlan: true,
+    },
+  });
+
+  if (!member) {
+    return { error: "Member not found" };
   }
+
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+  endDate.setMonth(endDate.getMonth() + member.membershipPlan.durationInMonth);
 
   await db.member.update({
     where: {

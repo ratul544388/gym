@@ -87,7 +87,7 @@ const DashboardPage = async () => {
 };
 
 const RecentMembers = async () => {
-  const members = await getMembers();
+  const members = await getMembers({ take: 10 });
   return (
     <div className="border p-5 space-y-5 rounded-xl dark:bg-secondary/50">
       <h3 className="text-xl font-semibold">Recent Admissions</h3>
