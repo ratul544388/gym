@@ -39,13 +39,11 @@ export const TableSearchInput = ({ value, onChange }: SearchProps) => {
   }, [debouncedValue, pathname, router, currentQuery, value]);
 
   return (
-    <div className="flex gap-3">
-      <Input
-        value={value}
-        className="h-8"
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Search members..."
-      />
-    </div>
+    <Input
+      value={value}
+      className="h-8 shadow-md w-fit"
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Search members..."
+    />
   );
 };

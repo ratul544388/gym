@@ -49,6 +49,7 @@ export const QuestionModal = () => {
             if (success) {
               toast.success(success);
               onClose();
+              form.reset();
               router.refresh();
             } else if (error) {
               toast.error(error);

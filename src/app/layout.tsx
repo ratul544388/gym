@@ -12,6 +12,7 @@ import ModalProvider from "@/providers/modal-provider";
 import { currentUser } from "@/lib/current-user";
 import { ConfettiProvider } from "@/providers/confetti-provider";
 import { InstituteName } from "@/lib/constants";
+import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,12 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={cn(inter.className, "overflow-x-hidden")}>
+        <body
+          className={cn(
+            inter.className,
+            "overflow-x-hidden bg-gray-50 dark:bg-gray-900"
+          )}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

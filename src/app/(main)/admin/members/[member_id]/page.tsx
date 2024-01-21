@@ -76,7 +76,7 @@ const MemberProfilePage = async ({
 
   return (
     <div className="space-y-3">
-      <PageHeader label={member.name} />
+      <PageHeader label={member.name} backButtonUrl="/admin/members" />
       <div className="flex flex-col gap-6 py-6 max-w-[500px] border rounded-xl shadow-lg mx-auto sm:px-3">
         <MemberPhoto image={member.image} className="mx-auto" />
         <section className="grid grid-cols-2 overflow-hidden">
@@ -106,7 +106,7 @@ const MemberProfilePage = async ({
           <Separator />
           <div className="flex gap-5 mt-2">
             <p className="text-muted-foreground">Joined</p>
-            <p>{getFormattedDate(member.createdAt)}</p>
+            <p>{getFormattedDate(member.startDate)}</p>
           </div>
           {member.renews.map((renew, index) => (
             <div key={renew.id} className="flex flex-col gap-3 items-center">

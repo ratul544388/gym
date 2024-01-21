@@ -190,8 +190,7 @@ export async function createMember({
     (await db.defaultSettings.findFirst().then((res) => res?.admissionFee)) ||
     0;
 
-  const startDate = new Date();
-  const endDate = new Date(startDate);
+  const endDate = new Date(values.startDate);
   endDate.setMonth(endDate.getMonth() + membershipPlan.durationInMonth);
 
   const cost = membershipPlan.price + admissionFee;
@@ -199,7 +198,6 @@ export async function createMember({
   const member = await db.member.create({
     data: {
       ...values,
-      startDate,
       endDate,
       cost,
       membershipPlanId,
@@ -248,8 +246,7 @@ export async function updateMember({
     return { error: "Member not found" };
   }
 
-  const startDate = new Date();
-  const endDate = new Date(startDate);
+  const endDate = new Date(values.startDate);
   endDate.setMonth(endDate.getMonth() + member.membershipPlan.durationInMonth);
 
   await db.member.update({

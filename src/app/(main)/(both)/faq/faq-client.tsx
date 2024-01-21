@@ -127,7 +127,16 @@ export const FaqClient = ({
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
-                      onClick={() => onOpen("DELETE_FAQ_MODAL", { faq })}
+                      onClick={() =>
+                        onOpen(
+                          isModerator
+                            ? isPopularQuestions
+                              ? "DELETE_QUESTION_MODAL"
+                              : "DELETE_FAQ_MODAL"
+                            : "DELETE_QUESTION_MODAL",
+                          { faq }
+                        )
+                      }
                       variant="ghost"
                       size="icon"
                       className={cn(
@@ -137,7 +146,7 @@ export const FaqClient = ({
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
-                    {faq.userId && isModerator && (
+                    {faq.userId && isModerator && !faq.answer && (
                       <Button
                         onClick={() => onOpen("ANSWER_MODAL", { faq })}
                         variant="ghost"
@@ -154,7 +163,11 @@ export const FaqClient = ({
           ))}
           <Button
             onClick={() =>
-              isModerator ? onOpen("FAQ_MODAL") : onOpen("QUESTION_MODAL")
+              currentUser
+                ? isModerator
+                  ? onOpen("FAQ_MODAL")
+                  : onOpen("QUESTION_MODAL")
+                : onOpen("AUTH_MODAL")
             }
             className="rounded-full p-0 h-14 w-14 fixed bottom-10 right-8 transition"
           >

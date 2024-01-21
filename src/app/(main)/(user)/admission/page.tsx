@@ -42,11 +42,11 @@ const SuccessPage = async ({
 
   return (
     <div className="h-full flex items-center justify-center">
-      <div className="dark:bg-secondary/50 border rounded-xl p-6 space-y-6 shadow-xl max-w-[500px]">
-        <h1 className="font-semibold text-center text-3xl text-green-500">
+      <div className="bg-background border rounded-xl p-6 space-y-6 shadow-xl max-w-[500px]">
+        <h1 className="font-semibold text-center text-3xl text-primary">
           Enroll Successful!
         </h1>
-        <CheckCircle2 className="h-14 w-14 text-green-500 mx-auto" />
+        <CheckCircle2 className="h-14 w-14 text-primary mx-auto" />
         <p>
           Enrollment successful! To finalize your admission, please visit our
           gym (<span className="text-primary">{InstituteName}</span>) to pay the
@@ -68,15 +68,12 @@ const SuccessPage = async ({
             {defaultSettings?.admissionFee}৳
           </p>
         </div>
-        <div className="flex justify-between gap-4 mt-3">
-          <CancelAdmissionButton />
-          <Link
-            href="/dashboard"
-            className={cn(buttonVariants({ variant: "default" }), "w-full")}
-          >
-            Go to Dashboard
-          </Link>
-        </div>
+        <Link
+          href="/dashboard"
+          className={cn(buttonVariants(), "w-full")}
+        >
+          Go to Dashboard
+        </Link>
       </div>
     </div>
   );

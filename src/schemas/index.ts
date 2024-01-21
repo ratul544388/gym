@@ -42,6 +42,10 @@ export const MemberSchema = z.object({
     invalid_type_error: "Joining date is missing",
     required_error: "Joining date is missing",
   }),
+  endDate: z.date({
+    invalid_type_error: "Joining date is missing",
+    required_error: "Joining date is missing",
+  }),
 });
 
 export const MembershipPlanSchema = z.object({

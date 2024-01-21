@@ -60,7 +60,7 @@ export function Filter({ options, title, filterKey }: FilterProps) {
 
   return (
     <Popover>
-      <PopoverTrigger asChild className="w-fit">
+      <PopoverTrigger asChild className="w-fit shadow-md">
         <Button
           variant="outline"
           size="sm"

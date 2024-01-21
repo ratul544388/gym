@@ -45,7 +45,10 @@ export const CancelAdmissionModal = () => {
       <DialogContent className="max-w-[350px]">
         <DialogHeader>
           <DialogTitle>Cancel Admission</DialogTitle>
-          <DialogDescription>Cancel Your Admission?</DialogDescription>
+          <DialogDescription>
+            Are you sure you want to cancel your admission. This action cannot
+            be undone?
+          </DialogDescription>
         </DialogHeader>
         <div className="flex justify-between">
           <Button disabled={isPending} onClick={onClose} variant="ghost">

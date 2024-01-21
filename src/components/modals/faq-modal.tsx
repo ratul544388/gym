@@ -39,15 +39,8 @@ export const FaqModal = () => {
 
   useEffect(() => {
     if (faq) {
-      form.reset({
-        question: faq.question,
-        answer: faq.answer as string,
-      });
-    } else {
-      form.reset({
-        question: "",
-        answer: "",
-      });
+      form.setValue("question", faq.question);
+      form.setValue("answer", faq.answer as string);
     }
   }, [form, faq]);
 
@@ -58,6 +51,7 @@ export const FaqModal = () => {
           if (success) {
             toast.success(success);
             onClose();
+            form.reset();
             router.refresh();
           } else if (error) {
             toast.error(error);
@@ -70,6 +64,7 @@ export const FaqModal = () => {
           if (success) {
             toast.success(success);
             onClose();
+            form.reset();
             router.refresh();
           } else if (error) {
             toast.error(error);
@@ -82,8 +77,8 @@ export const FaqModal = () => {
   };
 
   const handleClose = () => {
-    onClose();
     form.reset();
+    onClose();
   };
 
   return (

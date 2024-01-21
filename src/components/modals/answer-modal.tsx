@@ -37,13 +37,15 @@ export const AnswerModal = () => {
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
-      answer: "",
+      answer: faq?.answer || "",
     },
   });
 
   useEffect(() => {
-    form.setValue("answer", faq?.answer as string);
-  }, [faq, form]);
+    if (faq) {
+      form.setValue("answer", faq.answer as string);
+    }
+  }, [faq, form, isOpen]);
 
   if (!faq || !faq.question) {
     return null;

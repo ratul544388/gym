@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
+import { TextSelect } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -19,10 +20,14 @@ export const getEndDate = ({
 };
 
 export const formatText = (text: string) => {
-  return text
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  if (text.includes(" ")) {
+    return text
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  } else {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
 };
 
 export const isModerator = (user: User | null) => {

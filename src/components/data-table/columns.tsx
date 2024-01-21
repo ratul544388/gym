@@ -64,7 +64,11 @@ export const columns: ColumnDef<MemberWithPlanAndRenew>[] = [
     header: "Last Renew",
     cell: ({ row }) => {
       const lastRenew = row.original.renews[0]?.createdAt;
-      return <p>{lastRenew ? format(lastRenew, "d MMMM yyyy") : "Null"}</p>;
+      return (
+        <p className={cn(!lastRenew && "text-muted-foreground")}>
+          {lastRenew ? format(lastRenew, "d MMMM yyyy") : "No Renewals Yet"}
+        </p>
+      );
     },
   },
   {

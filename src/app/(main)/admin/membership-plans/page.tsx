@@ -11,7 +11,7 @@ const MembershipPlanPage = async () => {
         actionLabel="Add New"
         actionUrl="/admin/membership-plans/new"
       />
-      <section className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 items-center">
+      <section className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
         {membershipPlans.map((plan) => (
           <MembershipPlanCard key={plan.id} membershipPlan={plan} isModerator />
         ))}

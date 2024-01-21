@@ -8,14 +8,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { deleteFaq } from "@/actions/faq-action";
+import { deleteQuestion } from "@/actions/faq-action";
 import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 
-export const DeleteFaqModal = () => {
+export const DeleteQuestionModal = () => {
   const { isOpen, type, data, onClose } = useModal();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -28,7 +28,7 @@ export const DeleteFaqModal = () => {
 
   const onConfirm = () => {
     startTransition(() => {
-      deleteFaq(faq.id).then(({ error, success }) => {
+      deleteQuestion(faq.id).then(({ error, success }) => {
         if (success) {
           toast.success(success);
           onClose();
@@ -44,14 +44,15 @@ export const DeleteFaqModal = () => {
 
   return (
     <Dialog
-      open={isOpen && type === "DELETE_FAQ_MODAL"}
+      open={isOpen && type === "DELETE_QUESTION_MODAL"}
       onOpenChange={() => onClose()}
     >
       <DialogContent className="max-w-[350px]">
         <DialogHeader>
-          <DialogTitle>Delete the FAQ?</DialogTitle>
+          <DialogTitle>Delete Your Question?</DialogTitle>
           <DialogDescription>
-            This will delete the faq parmanetly.
+            Are you sure you want to delete your question parmaneltly. This
+            action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-between">

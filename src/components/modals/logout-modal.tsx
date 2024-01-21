@@ -8,33 +8,29 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { deleteFaq } from "@/actions/faq-action";
+import { cancelAdmission } from "@/actions/cancel-admission-action";
 import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
+import { SignOutButton } from "@clerk/nextjs";
 
-export const DeleteFaqModal = () => {
-  const { isOpen, type, data, onClose } = useModal();
+export const LogoutModal = () => {
+  const { isOpen, type, onClose } = useModal();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const { faq } = data;
-
-  if (!faq) {
-    return null;
-  }
-
   const onConfirm = () => {
     startTransition(() => {
-      deleteFaq(faq.id).then(({ error, success }) => {
+      cancelAdmission().then(({ error, success }) => {
         if (success) {
           toast.success(success);
           onClose();
+          router.push("/dashboard");
           router.refresh();
         } else if (error) {
-          toast.error(error);
+          toast.success(error);
         } else {
           toast.error("Something went wrong");
         }
@@ -44,27 +40,26 @@ export const DeleteFaqModal = () => {
 
   return (
     <Dialog
-      open={isOpen && type === "DELETE_FAQ_MODAL"}
+      open={isOpen && type === "LOGOUT_MODAL"}
       onOpenChange={() => onClose()}
     >
       <DialogContent className="max-w-[350px]">
         <DialogHeader>
-          <DialogTitle>Delete the FAQ?</DialogTitle>
+          <DialogTitle>Log Out</DialogTitle>
           <DialogDescription>
-            This will delete the faq parmanetly.
+            Are you sure you want to logout? You can login to your account
+            anytime again.
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-between">
           <Button disabled={isPending} onClick={onClose} variant="ghost">
-            Close
+            Cancel
           </Button>
-          <Button
-            variant="destructive"
-            disabled={isPending}
-            onClick={onConfirm}
-          >
-            Confirm
-          </Button>
+          <SignOutButton>
+            <Button disabled={isPending} onClick={() => router.push("/")}>
+              Confirm
+            </Button>
+          </SignOutButton>
         </div>
       </DialogContent>
     </Dialog>

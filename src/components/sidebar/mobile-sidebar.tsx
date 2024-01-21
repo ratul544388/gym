@@ -1,15 +1,19 @@
 "use client";
 
+import { cn, isModerator } from "@/lib/utils";
 import { Menu } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Logo } from "../logo";
-import { ThemeToggler } from "../theme-toggler";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { SidebarLinks } from "./sidebar-links";
-import { cn } from "@/lib/utils";
+import { User } from "@prisma/client";
+import { LogoutButton } from "../logout-button";
 
-export const MobileSidebar = ({ isModerator }: { isModerator: boolean }) => {
+export const MobileSidebar = ({
+  currentUser,
+}: {
+  currentUser: User | null;
+}) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -30,14 +34,14 @@ export const MobileSidebar = ({ isModerator }: { isModerator: boolean }) => {
       >
         <Menu className="h-5 w-5" />
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 py-3 flex flex-col gap-5">
+      <SheetContent side="left" className="p-0 pt-3 flex flex-col gap-5">
         <Logo className="ml-10" />
         <SidebarLinks
           layoutId="mobileSidebar"
-          isModerator={isModerator}
+          isModerator={isModerator(currentUser)}
           onOpenChange={() => open && setOpen(false)}
         />
-        <ThemeToggler className="mt-auto ml-10" />
+        {currentUser && <LogoutButton />}
       </SheetContent>
     </Sheet>
   );
