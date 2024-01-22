@@ -16,7 +16,7 @@ interface ImageUploadProps {
 
 export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
   return (
-    <div className="relative w-[200px] aspect-[4/3] h-fit sm:w-full sm:h-full border-[1.5px] border-dashed rounded-lg mx-auto flex items-center justify-center">
+    <div className="relative w-[200px] aspect-square h-fit sm:w-full sm:h-full border-[1.5px] border-dashed rounded-lg mx-auto flex items-center justify-center">
       {value ? (
         <>
           <MemberPhoto image={value} />
