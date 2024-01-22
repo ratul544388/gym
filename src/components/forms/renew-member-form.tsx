@@ -37,7 +37,7 @@ export const RenewMemberForm = ({
   selectedPlan: MembershipPlan;
   member: MemberWithPlanAndRenew;
 }) => {
-  const lastRenew = member.renews[member.renews.length]?.startDate;
+  const lastRenew = member.renews[member.renews.length - 1]?.startDate;
   const { onOpen } = useModal();
   const memberDetails = [
     {
