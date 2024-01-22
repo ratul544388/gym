@@ -23,13 +23,13 @@ export const RenewMemberModal = () => {
   const [isPending, startTransition] = useTransition();
   const confetti = useConfettiStore();
 
-  const { memberId, membershipPlanId } = data;
+  const { memberId, membershipPlanId, startDate } = data;
 
-  if (!memberId || !membershipPlanId) return null;
+  if (!memberId || !membershipPlanId || !startDate) return null;
 
   const onConfirm = () => {
     startTransition(() => {
-      renewMember({ memberId, membershipPlanId }).then(({ error, success }) => {
+      renewMember({ memberId, membershipPlanId, startDate }).then(({ error, success }) => {
         if (success) {
           toast.success(success);
           onClose();

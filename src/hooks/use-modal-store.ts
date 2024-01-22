@@ -31,6 +31,7 @@ interface ModalData {
   admissionFee?: number;
   faq?: Faq;
   isModerator?: boolean;
+  startDate?: Date;
 }
 
 interface ModalStore {

@@ -9,9 +9,11 @@ import { differenceInDays } from "date-fns";
 export async function renewMember({
   membershipPlanId,
   memberId,
+  startDate,
 }: {
   membershipPlanId: string;
   memberId: string;
+  startDate: Date;
 }) {
   const user = await currentUser();
 
@@ -57,9 +59,7 @@ export async function renewMember({
     return difference < -30;
   };
 
-  const startDate = isInvalidMember() ? new Date() : member.endDate;
   const endDate = new Date(startDate);
-
   endDate.setMonth(endDate.getMonth() + membershipPlan.durationInMonth);
 
   await db.member.update({
@@ -70,6 +70,7 @@ export async function renewMember({
       endDate,
       renews: {
         create: {
+          startDate,
           membershipPlanId,
           cost: membershipPlan.price,
         },

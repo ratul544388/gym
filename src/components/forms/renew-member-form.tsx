@@ -3,13 +3,30 @@
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { formatText } from "@/lib/utils";
-import { MemberWithPlanAndRenew, FullMembershipPlan } from "@/types";
+import { FullMembershipPlan, MemberWithPlanAndRenew } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { MembershipPlan } from "@prisma/client";
 import { format } from "date-fns";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
 import { CardWrapper } from "../card-wrapper";
 import { MembershipPlanPicker } from "../membership-plan-picker";
 import { Separator } from "../ui/separator";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { renewMemberSchema } from "@/schemas";
+import * as z from "zod";
+import { DatePicker } from "../date-picker";
+import { useEffect } from "react";
 
 export const RenewMemberForm = ({
   membershipPlans,
@@ -20,6 +37,7 @@ export const RenewMemberForm = ({
   selectedPlan: MembershipPlan;
   member: MemberWithPlanAndRenew;
 }) => {
+  const lastRenew = member.renews[member.renews.length]?.startDate;
   const { onOpen } = useModal();
   const memberDetails = [
     {
@@ -36,18 +54,33 @@ export const RenewMemberForm = ({
     },
     {
       label: "Last Renewed",
-      value: !!member.renews.length
-        ? format(
-            member.renews[member.renews.length - 1].createdAt,
-            "d MMMM yyyy"
-          )
-        : "Null",
+      value: lastRenew ? format(lastRenew, "d MMMM yyyy") : "No Renewals Yet",
     },
     {
       label: "Current Membership Plan",
       value: formatText(member.membershipPlan.name),
     },
   ];
+
+  const form = useForm<z.infer<typeof renewMemberSchema>>({
+    resolver: zodResolver(renewMemberSchema),
+    defaultValues: {
+      startDate: undefined,
+    },
+  });
+
+  function onSubmit() {
+    onOpen("RENEW_MEMBER_MODAL", {
+      memberId: member.id,
+      membershipPlanId: selectedPlan.id,
+      startDate: form.getValues("startDate"),
+    });
+  }
+
+  useEffect(() => {
+    form.setValue("startDate", lastRenew || member.endDate);
+  }, [form, member, lastRenew]);
+
   return (
     <CardWrapper>
       <MembershipPlanPicker
@@ -75,6 +108,27 @@ export const RenewMemberForm = ({
             ))}
           </div>
         </section>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="startDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Renewal Start</FormLabel>
+                  <FormControl>
+                    <DatePicker value={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormDescription>
+                    You don&apos;t necessarily change the Renewal Start Date for
+                    Regular Member.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
         <section className="flex flex-col xs:flex-row gap-6 xs:items-center justify-between">
           <div className="flex flex-col gap-1">
             <p className="text-muted-foreground font-semibold">
@@ -89,12 +143,7 @@ export const RenewMemberForm = ({
             </p>
           </div>
           <Button
-            onClick={() =>
-              onOpen("RENEW_MEMBER_MODAL", {
-                memberId: member.id,
-                membershipPlanId: selectedPlan.id,
-              })
-            }
+            onClick={onSubmit}
             className="ml-auto w-full xs:w-fit"
             type="button"
           >

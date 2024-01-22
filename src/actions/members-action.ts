@@ -44,7 +44,7 @@ export const getMembers = async ({
               {
                 renews: {
                   some: {
-                    createdAt: {
+                    startDate: {
                       gte: startOfDay(today),
                       lte: endOfDay(today),
                     },
@@ -65,7 +65,7 @@ export const getMembers = async ({
               {
                 renews: {
                   some: {
-                    createdAt: {
+                    startDate: {
                       gte: startOfMonth(today),
                       lte: endOfMonth(today),
                     },
@@ -78,7 +78,7 @@ export const getMembers = async ({
         ? {
             renews: {
               some: {
-                createdAt: {
+                startDate: {
                   gte: startOfDay(today),
                   lte: endOfDay(today),
                 },

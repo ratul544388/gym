@@ -12,7 +12,7 @@ export const MemberPhoto = ({ image, className }: MemberPhotoProps) => {
   return (
     <div
       className={cn(
-        "relative w-[200px] aspect-[5/6] rounded-xl overflow-hidden",
+        "relative w-full max-w-[280px] aspect-[4/3] overflow-hidden border rounded-lg",
         className
       )}
     >
