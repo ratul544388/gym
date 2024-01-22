@@ -3,10 +3,11 @@
 import { MembershipPlan } from "@prisma/client";
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Filter } from "./filter";
 import { TableSearchInput } from "./table-search-input";
+import { useLoadingStore } from "@/hooks/use-loading-store";
 
 export const TableFilters = ({
   membershipPlans,
@@ -16,8 +17,10 @@ export const TableFilters = ({
   const [value, setValue] = useState("");
   const params = useSearchParams();
   const router = useRouter();
+  const { onOpen } = useLoadingStore();
 
   const handleReset = () => {
+    onOpen();
     setValue("");
     router.push("/admin/members");
   };

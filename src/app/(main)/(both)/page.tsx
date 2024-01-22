@@ -1,5 +1,3 @@
-import { Footer } from "@/components/footer";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { buttonVariants } from "@/components/ui/button";
 import { InstituteName } from "@/lib/constants";
 import { currentUser } from "@/lib/current-user";

@@ -1,12 +1,9 @@
-import React, { Component} from 'react';
-import { FacebookProvider, CustomChat } from 'react-facebook';
+import { CustomChat, FacebookProvider } from "react-facebook";
 
-export default class Example extends Component {
-  render() {
-    return (
-      <FacebookProvider appId="123456789" chatSupport>
-        <CustomChat pageId="123456789" minimized={false}/>
-      </FacebookProvider>    
-    );
-  }
-} 
+export const FacebookMessageProvider = () => {
+  return (
+    <FacebookProvider appId="2501575746670447" chatSupport>
+      <CustomChat pageId="167130426494021" minimized={false} />
+    </FacebookProvider>
+  );
+};

@@ -1,13 +1,11 @@
 "use client";
 
+import { useLoadingStore } from "@/hooks/use-loading-store";
+import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "./ui/button";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
-import ReactPaginate from "react-paginate";
 import qs from "query-string";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Loader } from "./loader";
+import ReactPaginate from "react-paginate";
 
 interface PaginationProps {
   currentPage: number;
@@ -18,7 +16,7 @@ export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const params = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
+  const { onOpen } = useLoadingStore();
 
   const handleClick = (page: number) => {
     const currentQuery = qs.parse(params.toString());
@@ -34,14 +32,10 @@ export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
   };
 
   const handlePageClick = (event: { selected: number }) => {
-    setIsLoading(true);
+    onOpen();
     const newPageNumber = event.selected + 1;
     handleClick(newPageNumber);
   };
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, [params]);
 
   return (
     <>
@@ -56,7 +50,7 @@ export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
         )}
         onPageChange={handlePageClick}
         pageRangeDisplayed={3}
-        pageCount={totalPages}
+        pageCount={100}
         activeClassName="bg-primary px-3 py-1 text-white rounded-md"
         pageClassName=""
         previousLabel="<"
@@ -66,11 +60,6 @@ export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
         )}
         renderOnZeroPageCount={null}
       />
-      {isLoading && (
-        <div className="fixed inset-0">
-          <Loader />
-        </div>
-      )}
     </>
   );
 };

@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { Check, PlusCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
+import { useLoadingStore } from "@/hooks/use-loading-store";
 
 interface FilterProps {
   title: string;
@@ -31,8 +32,10 @@ export function Filter({ options, title, filterKey }: FilterProps) {
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
+  const { onOpen } = useLoadingStore();
 
   const onSelect = (value: string) => {
+    onOpen();
     let currentQuery = {};
 
     if (params) {

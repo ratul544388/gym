@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Separator } from "../ui/separator";
+import { useLoadingStore } from "@/hooks/use-loading-store";
 
 export const MemberForm = ({
   membershipPlans,
@@ -55,6 +56,7 @@ export const MemberForm = ({
   const router = useRouter();
   const confetti = useConfettiStore();
   const { onClose } = useModal();
+  const barLoading = useLoadingStore();
   const FramerButton = motion(Button);
   const form = useForm<z.infer<typeof MemberSchema>>({
     resolver: zodResolver(MemberSchema),
@@ -73,6 +75,7 @@ export const MemberForm = ({
   const pronoun = isModerator ? "Member's" : "Your";
 
   function onSubmit(values: z.infer<typeof MemberSchema>) {
+    barLoading.onOpen();
     startTranistion(() => {
       if (member) {
         updateMember({ values, memberId: member.id }).then(
@@ -83,10 +86,10 @@ export const MemberForm = ({
               router.push("/admin/members");
               router.refresh();
               confetti.onOpen();
+              barLoading.onClose();
             } else if (error) {
               toast.error(error);
-            } else {
-              toast.error("Something went wrong");
+              barLoading.onClose();
             }
           }
         );
@@ -104,10 +107,10 @@ export const MemberForm = ({
             );
             router.refresh();
             confetti.onOpen();
+            barLoading.onClose();
           } else if (error) {
             toast.error(error);
-          } else {
-            toast.error("Something went wrong");
+            barLoading.onClose();
           }
         });
       }
