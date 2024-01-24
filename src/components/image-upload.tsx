@@ -24,6 +24,7 @@ export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
             onClick={() => onChange("")}
             className="h-8 w-8 rounded-full absolute right-0.5 top-0.5"
             size="icon"
+            type="button"
             variant="ghost"
           >
             <X className="h-4 w-4 text-muted-foreground" />
