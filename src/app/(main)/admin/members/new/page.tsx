@@ -3,7 +3,6 @@ import { MemberForm } from "@/components/forms/member-form";
 import { PageHeader } from "@/components/page-header";
 import { currentUser } from "@/lib/current-user";
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
 const NewMember = async ({
@@ -31,7 +30,7 @@ const NewMember = async ({
         admissionFee={defaultSettings.admissionFee}
         membershipPlans={membershipPlans}
         selectedPlan={selectedPlan}
-        isModerator={isModerator(user)}
+        isAdmin={!!user?.isAdmin}
       />
     </div>
   );

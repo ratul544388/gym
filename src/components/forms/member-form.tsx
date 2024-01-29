@@ -44,13 +44,13 @@ export const MemberForm = ({
   selectedPlan,
   member,
   admissionFee = 0,
-  isModerator,
+  isAdmin,
 }: {
   membershipPlans: FullMembershipPlan[];
   selectedPlan: MembershipPlan;
   member?: MemberWithPlan;
   admissionFee?: number;
-  isModerator?: boolean;
+  isAdmin?: boolean;
 }) => {
   const [isPending, startTranistion] = useTransition();
   const router = useRouter();
@@ -72,7 +72,7 @@ export const MemberForm = ({
     },
   });
 
-  const pronoun = isModerator ? "Member's" : "Your";
+  const pronoun = isAdmin ? "Member's" : "Your";
 
   function onSubmit(values: z.infer<typeof MemberSchema>) {
     barLoading.onOpen();
@@ -101,7 +101,7 @@ export const MemberForm = ({
           if (success) {
             toast.success(success);
             router.push(
-              isModerator
+              isAdmin
                 ? `/admin/members/${memberId}`
                 : `/admission?success=true`
             );
@@ -200,7 +200,7 @@ export const MemberForm = ({
               </FormItem>
             )}
           />
-          {isModerator && (
+          {isAdmin && (
             <FormField
               control={form.control}
               name="email"

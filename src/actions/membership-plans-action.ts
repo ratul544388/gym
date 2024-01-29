@@ -2,7 +2,6 @@
 
 import { currentUser } from "@/lib/current-user";
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
 import { MembershipPlanSchema } from "@/schemas";
 import * as z from "zod";
 
@@ -52,7 +51,7 @@ export async function createMembershipPlan(
 
   const user = await currentUser();
 
-  if (!user || user.role !== "ADMIN") {
+  if (!user?.isAdmin) {
     return { error: "Permission denied" };
   }
 
@@ -84,11 +83,7 @@ export async function updateMembershipPlan({
 
   const user = await currentUser();
 
-  if (!user) {
-    return { error: "Unauthenticated" };
-  }
-
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return { error: "Only admin or moderator have this permission" };
   }
 
@@ -131,7 +126,7 @@ export async function deleteMembershipPlan(membershipPlanId: string) {
     return { error: "Membership plan Id is requried" };
   }
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return { error: "Only admin or moderator have this permission" };
   }
 

@@ -16,7 +16,7 @@ export async function createMembershipBenefit(
 
   const user = await currentUser();
 
-  if (!user || user.role !== "ADMIN") {
+  if (!user?.isAdmin) {
     return { error: "Permission denied" };
   }
 
@@ -43,7 +43,7 @@ export async function editMembershipBenefit(
 
   const user = await currentUser();
 
-  if (!user || user.role !== "ADMIN") {
+  if (!user?.isAdmin) {
     return { error: "Permission denied" };
   }
 
@@ -64,7 +64,7 @@ export async function deleteMembershipBenefit(benefitId: string) {
 
   const user = await currentUser();
 
-  if (!user || user.role !== "ADMIN") {
+  if (!user?.isAdmin) {
     return { error: "Permission denied" };
   }
 

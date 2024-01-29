@@ -7,7 +7,6 @@ import { FullMembershipPlan, MemberWithPlanAndRenew } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MembershipPlan } from "@prisma/client";
 import { format } from "date-fns";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { CardWrapper } from "../card-wrapper";
 import { MembershipPlanPicker } from "../membership-plan-picker";
@@ -24,9 +23,9 @@ import {
 } from "@/components/ui/form";
 
 import { renewMemberSchema } from "@/schemas";
+import { useEffect } from "react";
 import * as z from "zod";
 import { DatePicker } from "../date-picker";
-import { useEffect } from "react";
 import { MemberPhoto } from "../member-photo";
 
 export const RenewMemberForm = ({

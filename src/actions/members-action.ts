@@ -3,7 +3,6 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { getEndDate, isModerator } from "@/lib/utils";
 import { MemberSchema } from "@/schemas";
 import { Gender } from "@prisma/client";
 import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
@@ -201,12 +200,12 @@ export async function createMember({
       endDate,
       cost,
       membershipPlanId,
-      ...(isModerator(user) ? { isPaid: true } : { email: user.email }),
+      ...(user.isAdmin ? { isPaid: true } : { email: user.email }),
     },
   });
 
   return {
-    success: isModerator(user) ? "Member Created Successfully!" : "Success",
+    success: user.isAdmin ? "Member Created Successfully!" : "Success",
     memberId: member.id,
   };
 }
@@ -226,7 +225,7 @@ export async function updateMember({
 
   const user = await currentUser();
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",
@@ -271,7 +270,7 @@ export async function deleteMember({
 }) {
   const user = await currentUser();
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",
@@ -323,7 +322,7 @@ export async function deleteMember({
 export async function approveMember(memberId: string) {
   const user = await currentUser();
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",

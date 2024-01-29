@@ -7,15 +7,15 @@ import Link from "next/link";
 export const SidebarLinks = ({
   className,
   layoutId = "desktopSidebar",
-  isModerator,
+  isAdmin,
   onOpenChange,
 }: {
   layoutId?: string;
   className?: string;
-  isModerator: boolean;
+  isAdmin: boolean;
   onOpenChange?: () => void;
 }) => {
-  const routes = useRoutes({ isModerator });
+  const routes = useRoutes({ isAdmin });
   return (
     <nav className={cn(className)}>
       {routes.map((route) => (
@@ -25,7 +25,7 @@ export const SidebarLinks = ({
           key={route.href}
           className={cn(
             "relative flex items-center gap-3 pl-10 py-3 hover:bg-primary/5 transition-all font-medium text-foreground/80",
-            route.active && "font-semibold text-purple-500 bg-primary/5"
+            route.active && "font-semibold text-primary bg-primary/5"
           )}
         >
           <route.icon className="h-5 w-5" />

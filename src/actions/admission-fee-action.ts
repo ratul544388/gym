@@ -5,7 +5,6 @@ import * as z from "zod";
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
 import { AdmissionFeeSchema } from "@/schemas";
 
 export async function createAdmissionFee(
@@ -17,7 +16,7 @@ export async function createAdmissionFee(
     return { error: "Unauthenticated" };
   }
 
-  if (!isModerator(user)) {
+  if (!user.isAdmin) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",

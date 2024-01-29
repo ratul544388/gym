@@ -3,7 +3,6 @@
 import { currentUser } from "@/lib/current-user";
 
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
 import { differenceInDays } from "date-fns";
 
 export async function renewMember({
@@ -27,7 +26,7 @@ export async function renewMember({
     return { error: "Unauthenticated" };
   }
 
-  if (!isModerator(user)) {
+  if (!user.isAdmin) {
     return {
       error:
         "Permission Denied: Only administrators or moderators are authorized to perform this operation.",

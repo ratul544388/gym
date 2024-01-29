@@ -1,6 +1,5 @@
 import { currentUser } from "@/lib/current-user";
 import { FaqClient } from "./faq-client";
-import { isModerator } from "@/lib/utils";
 import db from "@/lib/db";
 
 const FAQPage = async ({
@@ -35,9 +34,7 @@ const FAQPage = async ({
     },
   });
 
-  return (
-    <FaqClient isModerator={isModerator(user)} faqs={faqs} currentUser={user} />
-  );
+  return <FaqClient isAdmin={!!user?.isAdmin} faqs={faqs} currentUser={user} />;
 };
 
 export default FAQPage;

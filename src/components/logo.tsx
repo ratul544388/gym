@@ -6,12 +6,13 @@ import Link from "next/link";
 
 interface LogoProps {
   className?: string;
+  isAdmin: boolean;
 }
 
-export const Logo = ({ className }: LogoProps) => {
+export const Logo = ({ className, isAdmin }: LogoProps) => {
   return (
     <Link
-      href="/"
+      href={isAdmin ? "/admin/dashboard" : "/"}
       className={cn("relative w-[190px] h-[50px] overflow-hidden", className)}
     >
       <Image

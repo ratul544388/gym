@@ -1,14 +1,11 @@
 import { buttonVariants } from "@/components/ui/button";
 import { InstituteName } from "@/lib/constants";
-import { currentUser } from "@/lib/current-user";
-import { isModerator } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const user = await currentUser();
   return (
     <main className="h-full flex flex-col">
       <div className="flex-grow">
@@ -31,7 +28,7 @@ export default async function Home() {
               size: "lg",
               className: "mt-5 group",
             })}
-            href={isModerator(user) ? "/admin/dashboard" : "/dashboard"}
+            href="/"
           >
             Get started{" "}
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-full transition" />

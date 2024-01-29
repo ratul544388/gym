@@ -16,7 +16,7 @@ import { Edit, MousePointer2, Plus, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface FaqClientProps {
-  isModerator: boolean;
+  isAdmin: boolean;
   faqs: (Faq & {
     user: User | null;
   })[];
@@ -24,7 +24,7 @@ interface FaqClientProps {
 }
 
 export const FaqClient = ({
-  isModerator,
+  isAdmin,
   faqs,
   currentUser,
 }: FaqClientProps) => {
@@ -50,7 +50,7 @@ export const FaqClient = ({
     },
   ];
 
-  if (isModerator) {
+  if (isAdmin) {
     tabs = [
       {
         label: "Popular Questions",
@@ -107,7 +107,7 @@ export const FaqClient = ({
                     <Button
                       onClick={() =>
                         onOpen(
-                          isModerator
+                          isAdmin
                             ? isPopularQuestions
                               ? "FAQ_MODAL"
                               : "ANSWER_MODAL"
@@ -121,7 +121,7 @@ export const FaqClient = ({
                       size="icon"
                       className={cn(
                         "rounded-full",
-                        isPopularQuestions && !isModerator && "hidden"
+                        isPopularQuestions && !isAdmin && "hidden"
                       )}
                     >
                       <Edit className="h-4 w-4" />
@@ -129,7 +129,7 @@ export const FaqClient = ({
                     <Button
                       onClick={() =>
                         onOpen(
-                          isModerator
+                          isAdmin
                             ? isPopularQuestions
                               ? "DELETE_QUESTION_MODAL"
                               : "DELETE_FAQ_MODAL"
@@ -141,12 +141,12 @@ export const FaqClient = ({
                       size="icon"
                       className={cn(
                         "rounded-full",
-                        isPopularQuestions && !isModerator && "hidden"
+                        isPopularQuestions && !isAdmin && "hidden"
                       )}
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
-                    {faq.userId && isModerator && !faq.answer && (
+                    {faq.userId && isAdmin && !faq.answer && (
                       <Button
                         onClick={() => onOpen("ANSWER_MODAL", { faq })}
                         variant="ghost"
@@ -164,7 +164,7 @@ export const FaqClient = ({
           <Button
             onClick={() =>
               currentUser
-                ? isModerator
+                ? isAdmin
                   ? onOpen("FAQ_MODAL")
                   : onOpen("QUESTION_MODAL")
                 : onOpen("AUTH_MODAL")

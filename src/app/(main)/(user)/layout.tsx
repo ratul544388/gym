@@ -1,5 +1,4 @@
 import { currentUser } from "@/lib/current-user";
-import { isModerator } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -10,7 +9,7 @@ export default async function UserLayout({
 }) {
   const user = await currentUser();
 
-  if (isModerator(user)) {
+  if (user?.isAdmin) {
     return redirect("/admin/dashboard");
   }
 

@@ -30,10 +30,6 @@ export const formatText = (text: string) => {
   }
 };
 
-export const isModerator = (user: User | null) => {
-  return !!(user && (user.role === "ADMIN" || user.role === "MODERATOR"));
-};
-
 export const formatMonth = (duration: number) => {
   return duration > 1 ? "Months" : "Month";
 };

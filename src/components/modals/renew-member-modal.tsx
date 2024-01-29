@@ -11,7 +11,7 @@ import {
 import { approveMember } from "@/actions/members-action";
 import { useModal } from "@/hooks/use-modal-store";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import { renewMember } from "@/actions/renew-member-action";

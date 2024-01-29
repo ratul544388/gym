@@ -2,7 +2,6 @@
 
 import { currentUser } from "@/lib/current-user";
 import db from "@/lib/db";
-import { isModerator } from "@/lib/utils";
 import { AnswerSchema, FaqSchema, QuestionSchema } from "@/schemas";
 import * as z from "zod";
 
@@ -15,7 +14,7 @@ export async function createFaq(values: z.infer<typeof FaqSchema>) {
     return { error: "Invalid field" };
   }
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return { error: "Only Admin or Moderators are allowed do this action" };
   }
 
@@ -48,7 +47,7 @@ export async function updateFaq({
     return { error: "Id is required" };
   }
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return { error: "Only Admin or Moderators are allowed do this action" };
   }
 
@@ -71,7 +70,7 @@ export async function deleteFaq(faqId: string) {
     return { error: "Id is required" };
   }
 
-  if (!isModerator(user)) {
+  if (!user?.isAdmin) {
     return { error: "Only Admin or Moderators are allowed do this action" };
   }
 

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
+export const useRoutes = ({ isAdmin }: { isAdmin: boolean }) => {
   const pathname = usePathname();
 
   const adminRoutes = [
@@ -80,5 +80,5 @@ export const useRoutes = ({ isModerator }: { isModerator: boolean }) => {
     },
   ];
 
-  return isModerator ? adminRoutes : userRoutes;
+  return isAdmin ? adminRoutes : userRoutes;
 };
