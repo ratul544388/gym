@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import {
   HelpCircle,
   Home,
@@ -8,7 +9,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export const useRoutes = ({ isAdmin }: { isAdmin: boolean }) => {
+export const useRoutes = ({ user }: { user: User | null }) => {
   const pathname = usePathname();
 
   const adminRoutes = [
@@ -53,18 +54,12 @@ export const useRoutes = ({ isAdmin }: { isAdmin: boolean }) => {
       active: pathname.includes("faq"),
     },
   ];
-  const userRoutes = [
+  const publicRoutes = [
     {
       label: "Home",
       icon: Home,
       href: "/",
       active: pathname === "/",
-    },
-    {
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/dashboard",
-      active: pathname.includes("dashboard"),
     },
     {
       label: "Membership Plans",
@@ -80,5 +75,22 @@ export const useRoutes = ({ isAdmin }: { isAdmin: boolean }) => {
     },
   ];
 
-  return isAdmin ? adminRoutes : userRoutes;
+  const authRoutes = [
+    ...publicRoutes,
+    {
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+      active: pathname.includes("dashboard"),
+    },
+  ];
+
+  if (user) {
+    if (user.isAdmin) {
+      return adminRoutes;
+    }
+    return authRoutes;
+  } else {
+    return publicRoutes;
+  }
 };

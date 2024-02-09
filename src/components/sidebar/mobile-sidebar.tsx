@@ -38,7 +38,7 @@ export const MobileSidebar = ({ user }: { user: User | null }) => {
         <Logo className="ml-10" isAdmin={isAdmin} />
         <SidebarLinks
           layoutId="mobileSidebar"
-          isAdmin={isAdmin}
+          user={user}
           onOpenChange={() => open && setOpen(false)}
         />
         {user && <AdminAndUserSwitcher isAdmin={isAdmin} className="ml-10" />}

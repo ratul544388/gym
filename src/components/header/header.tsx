@@ -29,7 +29,12 @@ export const Header = ({ user }: { user: User | null }) => {
           <Logo isAdmin={isAdmin} />
         </div>
         <div className="flex items-center gap-4">
-          <AdminAndUserSwitcher isAdmin={isAdmin} className="hidden md:flex" />
+          {user && (
+            <AdminAndUserSwitcher
+              isAdmin={isAdmin}
+              className="hidden md:flex"
+            />
+          )}
           <ThemeToggler className="hidden xs:flex" />
           {user ? (
             <div className="w-[32px]">

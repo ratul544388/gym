@@ -1,21 +1,22 @@
 "use client";
 import { useRoutes } from "@/hooks/use-routes";
 import { cn } from "@/lib/utils";
+import { User } from "@prisma/client";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
 export const SidebarLinks = ({
   className,
   layoutId = "desktopSidebar",
-  isAdmin,
+  user,
   onOpenChange,
 }: {
   layoutId?: string;
   className?: string;
-  isAdmin: boolean;
+  user: User | null;
   onOpenChange?: () => void;
 }) => {
-  const routes = useRoutes({ isAdmin });
+  const routes = useRoutes({ user });
   return (
     <nav className={cn(className)}>
       {routes.map((route) => (
