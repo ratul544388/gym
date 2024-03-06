@@ -2,22 +2,17 @@
 
 import { useQueryString } from "@/hooks/use-query-string";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, ChevronsRight, Router } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 
 interface PaginationProps {
+  currentPage: number;
   maxPages: number;
 }
 
-export const Pagination = ({ maxPages }: PaginationProps) => {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get("page")) || 1;
+export const Pagination = ({ currentPage, maxPages }: PaginationProps) => {
   const { handleClick } = useQueryString();
-
   const generatePages = useCallback((resetFrom: number) => {
     return Array.from({ length: 5 }, (_, index) => resetFrom + index);
   }, []);
@@ -31,52 +26,47 @@ export const Pagination = ({ maxPages }: PaginationProps) => {
     } else if (currentPage === pages[0]) {
       setPages(generatePages(pages[0] - 1));
     }
-  }, [pages, generatePages, currentPage, maxPages, searchParams]);
+  }, [pages, generatePages, currentPage, maxPages]);
 
   const onPageChange = (page: number) => {
-    handleClick({ key: "page", value: page });
+    handleClick({ key: "page", value: page, scroll: true });
   };
 
   return (
-    <div className="mx-auto w-fit mt-8 flex gap-3 bg-background rounded-full shadow-lg border py-2 px-4">
-      <Link
-        href={`/${pathname}?page=${currentPage - 1}`}
-        className={cn(
-          buttonVariants({ variant: "outline", size: "icon" }),
-          "h-8 w-8 rounded-full text-muted-foreground",
-          currentPage === 1 && "pointer-events-none opacity-60"
-        )}
+    <div className="mx-auto mt-8 flex gap-3 bg-background rounded-full shadow-lg border py-2 px-4">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => onPageChange(currentPage - 1)}
+        className={cn("h-8 w-8 rounded-full text-muted-foreground")}
+        disabled={currentPage === 1}
       >
         <ChevronsLeft className="h-5 w-5" />
-      </Link>
+      </Button>
       {pages.map((page) => (
-        <Link
-          href={`${pathname}?page=${page}`}
+        <Button
           onClick={() => onPageChange(page)}
           key={page}
+          disabled={page > maxPages}
+          size="icon"
+          variant={page === currentPage ? "default" : "outline"}
           className={cn(
-            buttonVariants({
-              size: "icon",
-              variant: page === currentPage ? "primary" : "outline",
-            }),
             "h-8 w-8 rounded-full",
-            page === currentPage && "text-white",
-            page > maxPages && "pointer-events-none opacity-60"
+            page === currentPage && "text-white"
           )}
         >
           {page}
-        </Link>
+        </Button>
       ))}
-      <Link
-        href={`/${pathname}?page=${currentPage + 1}`}
-        className={cn(
-          buttonVariants({ variant: "outline", size: "icon" }),
-          "h-8 w-8 rounded-full text-muted-foreground",
-          currentPage === maxPages && "pointer-events-none opacity-60"
-        )}
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage + 1)}
+        className={cn("h-8 w-8 rounded-full text-muted-foreground")}
+        disabled={currentPage === maxPages}
+        size="icon"
       >
         <ChevronsRight className="h-5 w-5" />
-      </Link>
+      </Button>
     </div>
   );
 };
