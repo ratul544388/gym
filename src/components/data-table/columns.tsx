@@ -34,7 +34,7 @@ export const columns: ColumnDef<MemberWithPlanAndRenew>[] = [
     accessorKey: "gender",
     header: "Gender",
     cell: ({ row }) => {
-      return `${formatText(row.original.gender)}`;
+      return `${formatText(row.original.gender).toLowerCase()}`;
     },
   },
   {
