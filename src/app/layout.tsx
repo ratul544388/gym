@@ -6,12 +6,12 @@ import { Header } from "@/components/header/header";
 import { InstituteName } from "@/lib/constants";
 import { currentUser } from "@/lib/current-user";
 import { cn } from "@/lib/utils";
+import { BarLoaderProvider } from "@/providers/bar-loader-provider";
 import { ConfettiProvider } from "@/providers/confetti-provider";
 import ModalProvider from "@/providers/modal-provider";
 import { ToastProvider } from "@/providers/toast-provider";
 import { ThemeProvider } from "../providers/theme-provider";
 import "./globals.css";
-import { BarLoaderProvider } from "@/providers/bar-loader-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
