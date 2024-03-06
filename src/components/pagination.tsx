@@ -5,14 +5,16 @@ import { cn } from "@/lib/utils";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { useSearchParams } from "next/navigation";
 
 interface PaginationProps {
-  currentPage: number;
   maxPages: number;
 }
 
-export const Pagination = ({ currentPage, maxPages }: PaginationProps) => {
+export const Pagination = ({ maxPages }: PaginationProps) => {
   const { handleClick } = useQueryString();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
   const generatePages = useCallback((resetFrom: number) => {
     return Array.from({ length: 5 }, (_, index) => resetFrom + index);
   }, []);
