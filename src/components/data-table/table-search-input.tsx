@@ -19,7 +19,6 @@ export const TableSearchInput = ({ value, onChange }: SearchProps) => {
   const router = useRouter();
   const debouncedValue = useDebounce(value, 500);
   const currentQuery = useCurrentQuery();
-  const params = useSearchParams();
 
   useEffect(() => {
     if (debouncedValue) {

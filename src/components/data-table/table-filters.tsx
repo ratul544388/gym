@@ -3,11 +3,11 @@
 import { MembershipPlan } from "@prisma/client";
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { PaginationDropdownMenu } from "../pagination-dropdown-menu";
 import { Button } from "../ui/button";
 import { Filter } from "./filter";
 import { TableSearchInput } from "./table-search-input";
-import { useLoadingStore } from "@/hooks/use-loading-store";
 
 export const TableFilters = ({
   membershipPlans,
@@ -17,10 +17,8 @@ export const TableFilters = ({
   const [value, setValue] = useState("");
   const params = useSearchParams();
   const router = useRouter();
-  const { onOpen } = useLoadingStore();
 
   const handleReset = () => {
-    onOpen();
     setValue("");
     router.push("/admin/members");
   };
@@ -45,6 +43,7 @@ export const TableFilters = ({
           <X className="h-4 w-4 ml-2 group-hover:scale-[1.4] transition group-hover:text-red-500" />
         </Button>
       )}
+      <PaginationDropdownMenu maxPages={50} />
     </section>
   );
 };

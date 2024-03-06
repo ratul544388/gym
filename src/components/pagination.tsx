@@ -1,65 +1,74 @@
 "use client";
 
-import { useLoadingStore } from "@/hooks/use-loading-store";
+import { useQueryString } from "@/hooks/use-query-string";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import qs from "query-string";
-import { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { useSearchParams } from "next/navigation";
 
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
+  maxPages: number;
 }
 
-export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const params = useSearchParams();
-  const { onOpen } = useLoadingStore();
+export const Pagination = ({ maxPages }: PaginationProps) => {
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const { handleClick } = useQueryString();
+  const generatePages = useCallback((resetFrom: number) => {
+    return Array.from({ length: 5 }, (_, index) => resetFrom + index);
+  }, []);
 
-  const handleClick = (page: number) => {
-    const currentQuery = qs.parse(params.toString());
-    const url = qs.stringifyUrl({
-      url: pathname,
-      query: {
-        ...currentQuery,
-        page,
-      },
-    });
+  const [pages, setPages] = useState<number[]>(generatePages(currentPage));
 
-    router.push(url, { scroll: false });
-  };
+  useEffect(() => {
+    if (currentPage === maxPages || currentPage === 1) return;
+    if (currentPage === pages[pages.length - 1]) {
+      setPages(generatePages(pages[1]));
+    } else if (currentPage === pages[0]) {
+      setPages(generatePages(pages[0] - 1));
+    }
+  }, [pages, generatePages, currentPage, maxPages]);
 
-  const handlePageClick = (event: { selected: number }) => {
-    onOpen();
-    const newPageNumber = event.selected + 1;
-    handleClick(newPageNumber);
+  const onPageChange = (page: number) => {
+    handleClick({ key: "page", value: page });
   };
 
   return (
-    <>
-      <ReactPaginate
-        className="flex gap-5 font-semibold text-foreground/60 items-center flex-wrap justify-center bg-accent w-fit mx-auto rounded-lg py-2 px-3 transition-all"
-        breakLabel="..."
-        breakClassName=""
-        nextLabel=">"
-        nextClassName={cn(
-          "font-extrabold",
-          currentPage === totalPages && "pointer-events-none opacity-50"
-        )}
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        pageCount={100}
-        activeClassName="bg-primary px-3 py-1 text-white rounded-md"
-        pageClassName=""
-        previousLabel="<"
-        previousClassName={cn(
-          "font-extrabold",
-          currentPage === 1 && "pointer-events-none opacity-50"
-        )}
-        renderOnZeroPageCount={null}
-      />
-    </>
+    <div className="mx-auto w-fit mt-8 flex gap-3 bg-background rounded-full shadow-lg border py-2 px-4">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => onPageChange(currentPage - 1)}
+        className={cn("h-8 w-8 rounded-full text-muted-foreground")}
+        disabled={currentPage === 1}
+      >
+        <ChevronsLeft className="h-5 w-5" />
+      </Button>
+      {pages.map((page) => (
+        <Button
+          onClick={() => onPageChange(page)}
+          key={page}
+          disabled={page > maxPages}
+          size="icon"
+          variant={page === currentPage ? "primary" : "outline"}
+          className={cn(
+            "h-8 w-8 rounded-full",
+            page === currentPage && "text-white"
+          )}
+        >
+          {page}
+        </Button>
+      ))}
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage + 1)}
+        className={cn("h-8 w-8 rounded-full text-muted-foreground")}
+        disabled={currentPage === maxPages}
+        size="icon"
+      >
+        <ChevronsRight className="h-5 w-5" />
+      </Button>
+    </div>
   );
 };

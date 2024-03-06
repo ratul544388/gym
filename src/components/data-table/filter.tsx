@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 
 import { cn, formatText } from "@/lib/utils";
 
@@ -17,10 +16,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { useQueryString } from "@/hooks/use-query-string";
 import { Check, PlusCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
-import { useLoadingStore } from "@/hooks/use-loading-store";
 
 interface FilterProps {
   title: string;
@@ -29,37 +28,8 @@ interface FilterProps {
 }
 
 export function Filter({ options, title, filterKey }: FilterProps) {
-  const pathname = usePathname();
   const params = useSearchParams();
-  const router = useRouter();
-  const { onOpen } = useLoadingStore();
-
-  const onSelect = (value: string) => {
-    onOpen();
-    let currentQuery = {};
-
-    if (params) {
-      currentQuery = qs.parse(params.toString());
-    }
-
-    const updatedQuery: any = {
-      ...currentQuery,
-      [filterKey]: value,
-    };
-
-    if (params?.get(filterKey) === value) {
-      delete updatedQuery[filterKey];
-    }
-
-    const url = qs.stringifyUrl(
-      {
-        url: pathname,
-        query: updatedQuery,
-      },
-      { skipEmptyString: true, skipNull: true }
-    );
-    router.push(url);
-  };
+  const { handleClick } = useQueryString();
 
   return (
     <Popover>
@@ -93,7 +63,12 @@ export function Filter({ options, title, filterKey }: FilterProps) {
                 return (
                   <CommandItem
                     key={option}
-                    onSelect={() => onSelect(option.toLowerCase())}
+                    onSelect={() => {
+                      handleClick({
+                        key: filterKey,
+                        value: option.toLowerCase(),
+                      });
+                    }}
                   >
                     <div
                       className={cn(
@@ -105,16 +80,7 @@ export function Filter({ options, title, filterKey }: FilterProps) {
                     >
                       <Check className={cn("h-4 w-4")} />
                     </div>
-                    {/* {option.icon && (
-                      <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                    )} */}
                     <span>{option}</span>
-                    {/* <Badge
-                      className="ml-auto h-5 w-5 p-0 flex items-center justify-center rounded-full"
-                      variant="outline"
-                    >
-                      {option.count}
-                    </Badge> */}
                   </CommandItem>
                 );
               })}
